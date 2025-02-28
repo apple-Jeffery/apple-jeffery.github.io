@@ -8,7 +8,7 @@
         :root {
             --bg-color: #f5f5f7;
             --text-color: #333;
-            --card-bg: rgba(255, 255, 255, 0.6); /* 玻璃拟态 */
+            --card-bg: rgba(255, 255, 255, 0.6);
             --button-bg: #007aff;
             --button-hover: #005ecb;
         }
@@ -34,21 +34,15 @@
             padding: 20px;
             background: var(--card-bg);
             border-radius: 16px;
-            backdrop-filter: blur(10px); /* 玻璃拟态 */
+            backdrop-filter: blur(10px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             opacity: 0;
             transform: translateY(30px);
             animation: fadeIn 1.2s ease-in-out forwards;
         }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         img {
             max-width: 200px;
@@ -57,7 +51,7 @@
         }
         .button {
             display: inline-block;
-            margin-top: 20px;
+            margin-top: 15px;
             padding: 12px 24px;
             background: var(--button-bg);
             color: white;
@@ -105,30 +99,24 @@
     
     <div class="container">
         <h1>Welcome to Jeffery's World</h1>
-        <p>你好！我是 Jeffery，一个热爱科技、摄影和音乐的探索者。</p>
+        <p style="font-size: 1.3em; font-weight: bold;">🍪 喜欢让厨房变得甜甜香香，烘焙是我的治愈时刻。</p>
+        <p style="font-size: 1.3em; font-weight: bold;">📷 偶尔带着相机四处走走，捕捉那些不经意间的美好瞬间。</p>
+        <p style="font-size: 1.3em; font-weight: bold;">🎧 耳机里总有旋律陪伴，不管是轻柔的吉他还是激昂的交响，都有属于它的时间。</p>
+        <p style="font-size: 1.2em;">🍸 偶尔自己调点酒，比如金酒、伏特加，给生活加点微醺的氛围，享受那份精致的放松。</p>
+        <p style="font-size: 0.9em; color: #666;">从不碰烟，因为烟草过敏，闻到都会不舒服。</p>
         <img src="profile.jpg" alt="Jeffery 头像">
         <p><a class="button fade-in" href="about.html">🧑‍🎓 了解 Jeffery</a></p>
         <p><a class="button fade-in" href="blog.html">🚀 发现我的想法</a></p>
         <p><a class="button fade-in" href="notes.pdf" download>📖 我的学习笔记</a></p>
-        <p>
-            <a class="button fade-in" href="https://github.com/apple-Jeffery" target="_blank">🚀 我的 GitHub</a>
-            <a class="button fade-in" href="https://linkedin.com/in/apple-Jeffery" target="_blank">🌍 商务合作</a>
-            <a class="button fade-in" href="mailto:839699910@qq.com">📬 电子邮件</a>
-            <a class="button fade-in" href="tel:+610421866599">📞 联系电话</a>
-        </p>
+        <p><a class="button fade-in" href="photos.html">📷 查看我的摄影作品</a></p>
+        <p><a class="button fade-in" href="music.html">🎶 我喜欢的歌单</a></p>
     </div>
 
     <!-- 音乐播放 -->
     <audio id="bg-music" loop>
         <source src="music.mp3" type="audio/mp3">
     </audio>
-    <button class="button" onclick="toggleMusic()">🎵 播放音乐</button>
-
-    <!-- 留言功能 -->
-    <div id="comments" class="container fade-in">
-        <h2>💬 留言区</h2>
-        <div id="disqus_thread"></div>
-    </div>
+    <button class="button" id="music-btn" onclick="toggleMusic()">🎵 播放音乐</button>
 
     <footer>© 2025 Jeffery. All Rights Reserved.</footer>
 
@@ -151,36 +139,15 @@
         // 音乐播放
         function toggleMusic() {
             var music = document.getElementById("bg-music");
+            var musicBtn = document.getElementById("music-btn");
             if (music.paused) {
                 music.play();
+                musicBtn.textContent = "⏸ 暂停音乐";
             } else {
                 music.pause();
+                musicBtn.textContent = "🎵 播放音乐";
             }
         }
-
-        // 滚动触发动画
-        document.addEventListener("scroll", function() {
-            let elements = document.querySelectorAll(".fade-in");
-            elements.forEach(el => {
-                let position = el.getBoundingClientRect().top;
-                let screenHeight = window.innerHeight;
-                if (position < screenHeight - 100) {
-                    el.classList.add("visible");
-                }
-            });
-        });
-
-        // 留言功能（Disqus）
-        var disqus_config = function () {
-            this.page.url = window.location.href;
-            this.page.identifier = "Jeffery_Hub";
-        };
-        (function() {
-            var d = document, s = d.createElement("script");
-            s.src = "https://your-disqus-shortname.disqus.com/embed.js";
-            s.setAttribute("data-timestamp", +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
     </script>
 </body>
 </html>
