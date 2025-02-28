@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="Jeffery, blog, photography, coding, 烘焙, 吉他, 调酒">
     <title>🔥 Jeffery's Hub</title>
     <style>
         :root {
@@ -22,10 +21,12 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: var(--bg-color);
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            background-attachment: fixed;
             color: var(--text-color);
             text-align: center;
-            transition: background 0.5s ease-in-out, color 0.5s ease-in-out;
+            transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
         }
         .container {
             max-width: 800px;
@@ -35,17 +36,24 @@
             border-radius: 16px;
             backdrop-filter: blur(10px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 1.2s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .button {
             display: inline-block;
-            margin: 10px;
+            margin-top: 15px;
             padding: 12px 24px;
             background: var(--button-bg);
             color: white;
-            border-radius: 8px;
             text-decoration: none;
             font-size: 18px;
-            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 8px;
+            transition: 0.3s;
         }
         .button:hover {
             transform: scale(1.05);
@@ -63,62 +71,81 @@
             border-radius: 6px;
             cursor: pointer;
         }
-        #back-to-top {
-            display: none;
-            position: fixed;
-            bottom: 30px;
-            right: 20px;
-            padding: 12px 16px;
-            background: var(--button-bg);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 20px;
-        }
         footer {
             margin-top: 50px;
             padding: 20px;
             font-size: 14px;
+            color: var(--text-color);
+        }
+        .article {
+            text-align: left;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        .article.active {
+            display: block;
+        }
+        .article h3 {
+            color: #007aff;
+            font-size: 1.5em;
         }
     </style>
 </head>
 <body>
-    <header><h1>🔥 Jeffery's Hub</h1></header>
+    <header>🔥 Jeffery's Hub</header>
     <button class="toggle-button" onclick="toggleDarkMode()">🌙</button>
-    <button id="back-to-top" onclick="scrollToTop()">🔝</button>
     
     <div class="container">
-        <h2>Welcome to Jeffery's World</h2>
-        <p>🍪 喜欢让厨房变得甜甜香香，烘焙是我的治愈时刻。</p>
-        <p>📷 偶尔带着相机四处走走，捕捉不经意间的美好瞬间。</p>
-        <p>🎧 耳机里总有旋律陪伴，不管是轻柔的吉他还是激昂的交响，都有属于它的时间。</p>
-        <p>🍸 偶尔自己调点酒，比如金酒、伏特加，给生活加点微醺的氛围。</p>
-        <p><a class="button" href="about.html">🧑‍🎓 了解 Jeffery</a></p>
-        <p><a class="button" href="blog.html">🚀 发现我的想法</a></p>
-        <p><a class="button" href="photos.html">📷 查看我的摄影作品</a></p>
-        <p><button class="button" onclick="history.back()">🔙 返回上一页</button></p>
+        <h1>Welcome to Jeffery's World</h1>
+        <p><a class="button fade-in" href="#articles">🌿 值得一读的文章</a></p>
+        <p><button class="button fade-in" onclick="goBack()">🔙 返回上一页</button></p>
+
+        <!-- 文章内容（分页） -->
+        <div id="articles">
+            <div class="article active" id="article1">
+                <h3>📖 IELTS Argumentative Essay 1: The Impact of Technology on Society</h3>
+                <p>Technology has significantly changed the way society operates, influencing various aspects of daily life...</p>
+                <p>In conclusion, while technology has undeniably brought numerous benefits to society, it also comes with challenges...</p>
+                <button class="button" onclick="nextArticle(1)">➡️ 下一篇</button>
+            </div>
+
+            <div class="article" id="article2">
+                <h3>📖 IELTS Argumentative Essay 2: The Benefits of Online Education</h3>
+                <p>Online education has revolutionized the way people acquire knowledge, offering unparalleled flexibility...</p>
+                <p>In conclusion, online education is a powerful tool that democratizes learning, making high-quality education accessible...</p>
+                <button class="button" onclick="nextArticle(2)">➡️ 下一篇</button>
+            </div>
+
+            <div class="article" id="article3">
+                <h3>📖 鲁迅 – 《风筝》</h3>
+                <p>小时候，我曾亲手毁掉了弟弟的风筝... 多年过去，我开始回想起这件事，并意识到自己当时的冷酷无情...</p>
+                <p>现在回想，我多么希望能对那个年幼的自己说：“放他去玩吧，风筝飞得再高，也不会影响一个孩子的成长...”</p>
+                <button class="button" onclick="nextArticle(3)">➡️ 返回第一篇</button>
+            </div>
+        </div>
     </div>
-    
-    <footer>© <span id="year"></span> Jeffery. All Rights Reserved.</footer>
+
+    <footer>© 2025 Jeffery. All Rights Reserved.</footer>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            document.getElementById("year").innerText = new Date().getFullYear();
-            if (localStorage.getItem("dark-mode") === "enabled") {
-                document.body.classList.add("dark-mode");
-            }
-        });
         function toggleDarkMode() {
             document.body.classList.toggle("dark-mode");
             localStorage.setItem("dark-mode", document.body.classList.contains("dark-mode") ? "enabled" : "disabled");
         }
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: "smooth" });
+
+        function goBack() {
+            window.history.back();
         }
-        window.addEventListener("scroll", function() {
-            document.getElementById("back-to-top").style.display = window.scrollY > 300 ? "block" : "none";
-        });
+
+        function nextArticle(current) {
+            document.getElementById(`article${current}`).classList.remove("active");
+            let next = current === 3 ? 1 : current + 1;
+            document.getElementById(`article${next}`).classList.add("active");
+        }
     </script>
 </body>
 </html>
