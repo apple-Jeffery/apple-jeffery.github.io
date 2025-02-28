@@ -44,11 +44,6 @@
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        img {
-            max-width: 200px;
-            border-radius: 50%;
-            margin-top: 20px;
-        }
         .button {
             display: inline-block;
             margin-top: 15px;
@@ -82,15 +77,21 @@
             font-size: 14px;
             color: var(--text-color);
         }
-        /* 滚动触发动画 */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 1s ease-in-out;
+        .article {
+            text-align: left;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: none;
         }
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .article.active {
+            display: block;
+        }
+        .article h3 {
+            color: #007aff;
+            font-size: 1.5em;
         }
     </style>
 </head>
@@ -100,54 +101,51 @@
     
     <div class="container">
         <h1>Welcome to Jeffery's World</h1>
-        <p style="font-size: 1.3em; font-weight: bold;">🍪 喜欢让厨房变得甜甜香香，烘焙是我的治愈时刻。</p>
-        <p style="font-size: 1.3em; font-weight: bold;">📷 偶尔带着相机四处走走，捕捉那些不经意间的美好瞬间。</p>
-        <p style="font-size: 1.3em; font-weight: bold;">🎧 耳机里总有旋律陪伴，不管是轻柔的吉他还是激昂的交响，都有属于它的时间。</p>
-        <p style="font-size: 1.2em;">🍸 偶尔自己调点酒，比如金酒、伏特加，给生活加点微醺的氛围，享受那份精致的放松。</p>
-        <p style="font-size: 0.9em; color: #666;">从不碰烟，因为烟草过敏，闻到都会不舒服。</p>
-        <img src="profile.jpg" alt="Jeffery 头像">
-        <p><a class="button fade-in" href="about.html">🧑‍🎓 了解 Jeffery</a></p>
-        <p><a class="button fade-in" href="blog.html">🚀 发现我的想法</a></p>
-        <p><a class="button fade-in" href="notes.pdf" download>📖 我的学习笔记</a></p>
-        <p><a class="button fade-in" href="photos.html">📷 查看我的摄影作品</a></p>
+        <p><a class="button fade-in" href="#articles">🌿 看看值得一读的文章</a></p>
         <p><button class="button fade-in" onclick="goBack()">🔙 返回上一页</button></p>
+
+        <!-- 文章内容（分页） -->
+        <div id="articles">
+            <div class="article active" id="article1">
+                <h3>📖 IELTS Argumentative Essay 1: The Impact of Technology on Society</h3>
+                <p>Technology has significantly changed the way society operates, influencing various aspects of daily life...</p>
+                <p>In conclusion, while technology has undeniably brought numerous benefits to society, it also comes with challenges...</p>
+                <button class="button" onclick="nextArticle(1)">➡️ 下一篇</button>
+            </div>
+
+            <div class="article" id="article2">
+                <h3>📖 IELTS Argumentative Essay 2: The Benefits of Online Education</h3>
+                <p>Online education has revolutionized the way people acquire knowledge, offering unparalleled flexibility...</p>
+                <p>In conclusion, online education is a powerful tool that democratizes learning, making high-quality education accessible...</p>
+                <button class="button" onclick="nextArticle(2)">➡️ 下一篇</button>
+            </div>
+
+            <div class="article" id="article3">
+                <h3>📖 鲁迅 – 《风筝》</h3>
+                <p>小时候，我曾亲手毁掉了弟弟的风筝... 多年过去，我开始回想起这件事，并意识到自己当时的冷酷无情...</p>
+                <p>现在回想，我多么希望能对那个年幼的自己说：“放他去玩吧，风筝飞得再高，也不会影响一个孩子的成长...”</p>
+                <button class="button" onclick="nextArticle(3)">➡️ 返回第一篇</button>
+            </div>
+        </div>
     </div>
 
     <footer>© 2025 Jeffery. All Rights Reserved.</footer>
 
     <script>
-        // 黑暗模式记忆
-        document.addEventListener("DOMContentLoaded", function() {
-            if (localStorage.getItem("dark-mode") === "enabled") {
-                document.body.classList.add("dark-mode");
-            }
-        });
         function toggleDarkMode() {
             document.body.classList.toggle("dark-mode");
-            if (document.body.classList.contains("dark-mode")) {
-                localStorage.setItem("dark-mode", "enabled");
-            } else {
-                localStorage.setItem("dark-mode", "disabled");
-            }
+            localStorage.setItem("dark-mode", document.body.classList.contains("dark-mode") ? "enabled" : "disabled");
         }
 
-        // 返回上一个页面
         function goBack() {
             window.history.back();
         }
 
-        // 滚动触发动画
-        document.addEventListener("scroll", function() {
-            let elements = document.querySelectorAll(".fade-in");
-            elements.forEach(el => {
-                let position = el.getBoundingClientRect().top;
-                let screenHeight = window.innerHeight;
-                if (position < screenHeight - 100) {
-                    el.classList.add("visible");
-                }
-            });
-        });
+        function nextArticle(current) {
+            document.getElementById(`article${current}`).classList.remove("active");
+            let next = current === 3 ? 1 : current + 1;
+            document.getElementById(`article${next}`).classList.add("active");
+        }
     </script>
 </body>
 </html>
-
