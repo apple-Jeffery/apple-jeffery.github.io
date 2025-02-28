@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 Jeffery's Hub</title>
+    <style>
+        :root {
+            --bg-color: #f5f5f7;
+            --text-color: #333;
+            --card-bg: white;
+            --button-bg: #007aff;
+            --button-hover: #005ecb;
+        }
+        body.dark-mode {
+            --bg-color: #1c1c1e;
+            --text-color: #f5f5f7;
+            --card-bg: #2c2c2e;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-color);
+            text-align: center;
+            transition: background 0.3s, color 0.3s;
+        }
+        header {
+            background: var(--card-bg);
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        img {
+            max-width: 200px;
+            border-radius: 50%;
+            margin-top: 20px;
+        }
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: var(--button-bg);
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+        .button:hover {
+            background: var(--button-hover);
+        }
+        .toggle-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            background: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        footer {
+            margin-top: 50px;
+            padding: 20px;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+    </style>
+</head>
+<body>
+    <header>🔥 Jeffery's Hub</header>
+    <button class="toggle-button" onclick="toggleDarkMode()">🌙</button>
+    
+    <div class="container">
+        <h1>Welcome to Jeffery's World</h1>
+        <p>你好！我是 Jeffery，一个热爱科技、摄影和音乐的探索者。</p>
+        <img src="profile.jpg" alt="Jeffery 头像">
+        <p><a class="button" href="about.html">🧑‍🎓 了解 Jeffery</a></p>
+        <p><a class="button" href="blog.html">🚀 发现我的想法</a></p>
+        <p><a class="button" href="notes.pdf" download>📖 我的学习笔记</a></p>
+        <p>
+            <a class="button" href="https://github.com/apple-Jeffery" target="_blank">🚀 我的 GitHub</a>
+            <a class="button" href="https://linkedin.com/in/apple-Jeffery" target="_blank">🌍 商务合作</a>
+            <a class="button" href="mailto:839699910@qq.com">📬 电子邮件</a>
+            <a class="button" href="tel:+610421866599">📞 联系电话</a>
+        </p>
+    </div>
+    
+    <footer>© 2025 Jeffery. All Rights Reserved.</footer>
+
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>
