@@ -9,8 +9,8 @@
             --bg-color: #f5f5f7;
             --text-color: #333;
             --card-bg: rgba(255, 255, 255, 0.6);
-            --button-bg: rgba(0, 122, 255, 0.8); /* 透明度调整 */
-            --button-hover: rgba(0, 94, 203, 0.9);
+            --button-bg: rgba(0, 122, 255, 0.7); /* 透明度调整 */
+            --button-hover: rgba(0, 94, 203, 0.8);
         }
         body.dark-mode {
             --bg-color: #1c1c1e;
@@ -110,15 +110,8 @@
         <p><a class="button fade-in" href="blog.html">🚀 发现我的想法</a></p>
         <p><a class="button fade-in" href="notes.pdf" download>📖 我的学习笔记</a></p>
         <p><a class="button fade-in" href="photos.html">📷 查看我的摄影作品</a></p>
-        <p><a class="button fade-in" href="music.html">🎶 我喜欢的歌单</a></p>
         <p><button class="button fade-in" onclick="goBack()">🔙 返回上一页</button></p>
     </div>
-
-    <!-- 音乐播放 -->
-    <audio id="bg-music" loop>
-        <source src="music.mp3" type="audio/mp3">
-    </audio>
-    <button class="button" id="music-btn" onclick="toggleMusic()">🎵 播放音乐</button>
 
     <footer>© 2025 Jeffery. All Rights Reserved.</footer>
 
@@ -135,22 +128,6 @@
                 localStorage.setItem("dark-mode", "enabled");
             } else {
                 localStorage.setItem("dark-mode", "disabled");
-            }
-        }
-
-        // 音乐播放修复
-        function toggleMusic() {
-            var music = document.getElementById("bg-music");
-            var musicBtn = document.getElementById("music-btn");
-            if (!music.src.includes("music.mp3")) {
-                music.src = "music.mp3";  // 确保路径正确
-            }
-            if (music.paused) {
-                music.play();
-                musicBtn.textContent = "⏸ 暂停音乐";
-            } else {
-                music.pause();
-                musicBtn.textContent = "🎵 播放音乐";
             }
         }
 
@@ -173,3 +150,4 @@
     </script>
 </body>
 </html>
+
