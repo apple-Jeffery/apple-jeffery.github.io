@@ -10,17 +10,17 @@
             text-align: center;
             background: url('background.jpg') no-repeat center center fixed;
             background-size: cover;
-            color: white;
+            color: black;
             margin: 0;
             padding: 20px;
         }
         .container {
             max-width: 600px;
             margin: auto;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(255, 255, 255, 0.85); /* 白色半透明背景 */
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         audio {
             width: 100%;
@@ -28,23 +28,21 @@
         }
         .lyrics {
             max-height: 250px;
-            overflow-y: auto;
+            overflow: hidden;
             text-align: center;
-            background: rgba(240, 240, 240, 0.9);
-            border-radius: 10px;
             padding: 10px;
-            color: black;
             font-size: 18px;
             line-height: 1.8;
+            position: relative;
+        }
+        .lyrics p {
+            margin: 5px 0;
             transition: all 0.3s ease-in-out;
         }
         .highlight {
             color: #007aff;
             font-weight: bold;
             font-size: 22px;
-        }
-        .lyrics p {
-            transition: 0.3s ease-in-out;
         }
     </style>
 </head>
@@ -60,12 +58,14 @@
         <button onclick="loadSong('music.mp3', 'lyrics1.lrc')">🎵 歌曲 1</button>
         <button onclick="loadSong('music2.mp3', 'lyrics2.lrc')">🎵 歌曲 2</button>
 
-        <div class="lyrics" id="lyrics"></div>
+        <div class="lyrics">
+            <div id="lyrics-content"></div>
+        </div>
     </div>
 
     <script>
         let audio = document.getElementById("audio");
-        let lyricsDiv = document.getElementById("lyrics");
+        let lyricsDiv = document.getElementById("lyrics-content");
         let lyricsData = [];
 
         function loadSong(song, lyricsFile) {
@@ -89,19 +89,29 @@
                     return { time, text: match[3].trim() };
                 }
             }).filter(Boolean);
+
+            // 预填充歌词区域，避免滚动突兀
+            lyricsDiv.innerHTML = lyricsData.map(l => `<p>${l.text}</p>`).join("");
         }
 
         audio.addEventListener("timeupdate", function() {
             let time = audio.currentTime;
             let activeIndex = lyricsData.findIndex((l, i) => lyricsData[i + 1]?.time > time);
-            lyricsDiv.innerHTML = lyricsData.map((l, index) => 
-                `<p class="${index === activeIndex ? 'highlight' : ''}">${l.text}</p>`
-            ).join("");
+            let lines = lyricsDiv.getElementsByTagName("p");
 
-            // 自动滚动歌词，使当前播放的歌词行保持居中
-            let activeLine = document.querySelector(".highlight");
-            if (activeLine) {
-                lyricsDiv.scrollTop = activeLine.offsetTop - lyricsDiv.offsetHeight / 2;
+            for (let i = 0; i < lines.length; i++) {
+                lines[i].classList.remove("highlight");
+            }
+
+            if (activeIndex !== -1) {
+                lines[activeIndex].classList.add("highlight");
+
+                // **歌词滚动居中**
+                let scrollOffset = lines[activeIndex].offsetTop - lyricsDiv.parentElement.offsetHeight / 2 + 20;
+                lyricsDiv.parentElement.scrollTo({
+                    top: scrollOffset,
+                    behavior: "smooth"
+                });
             }
         });
 
