@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🔥 Jeffery's Hub</title>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js"></script>
     <style>
         :root {
             --bg-color: #f5f5f7;
             --text-color: #333;
             --card-bg: rgba(255, 255, 255, 0.6);
-            --button-bg: rgba(0, 122, 255, 0.7); /* 透明度调整 */
-            --button-hover: rgba(0, 94, 203, 0.8);
+            --button-bg: rgba(0, 122, 255, 0.7);
+            --button-hover: linear-gradient(45deg, #ff4e50, #fc913a);
         }
         body.dark-mode {
             --bg-color: #1c1c1e;
@@ -23,7 +25,6 @@
             padding: 0;
             background: url('background.jpg') no-repeat center center fixed;
             background-size: cover;
-            background-attachment: fixed;
             color: var(--text-color);
             text-align: center;
             transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
@@ -36,18 +37,11 @@
             border-radius: 16px;
             backdrop-filter: blur(10px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transform: translateY(30px);
             animation: fadeIn 1.2s ease-in-out forwards;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-        img {
-            max-width: 200px;
-            border-radius: 50%;
-            margin-top: 20px;
         }
         .button {
             display: inline-block;
@@ -59,11 +53,12 @@
             font-size: 18px;
             border-radius: 8px;
             transition: 0.3s;
+            background-size: 200%;
         }
         .button:hover {
+            background: var(--button-hover);
             transform: scale(1.05);
             box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
-            background: var(--button-hover);
         }
         .toggle-button {
             position: fixed;
@@ -82,99 +77,91 @@
             font-size: 14px;
             color: var(--text-color);
         }
-        /* 滚动触发动画 */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 1s ease-in-out;
+        .progress-container {
+            width: 100%;
+            background: #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
         }
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .progress-bar {
+            height: 5px;
+            width: 0%;
+            background: #007aff;
+            border-radius: 5px;
+        }
+        .particle-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
         }
     </style>
 </head>
 <body>
+    <div id="particles-js" class="particle-container"></div>
     <header>🔥 Jeffery's Hub</header>
     <button class="toggle-button" onclick="toggleDarkMode()">🌙</button>
     
     <div class="container">
-        <h1>Welcome to Jeffery's World</h1>
-        <p style="font-size: 1.3em; font-weight: bold;">🍪 喜欢让厨房变得甜甜香香，烘焙是我的治愈时刻。</p>
-        <p style="font-size: 1.3em; font-weight: bold;">📷 偶尔带着相机四处走走，捕捉那些不经意间的美好瞬间。</p>
-        <p style="font-size: 1.3em; font-weight: bold;">🎧 耳机里总有旋律陪伴，不管是轻柔的吉他还是激昂的交响，都有属于它的时间。</p>
-        <p style="font-size: 1.2em;">🍸 偶尔自己调点酒，比如金酒、伏特加，给生活加点微醺的氛围，享受那份精致的放松。</p>
-        <p style="font-size: 0.9em; color: #666;">从不碰烟，因为烟草过敏，闻到都会不舒服。</p>
-        <img src="profile.jpg" alt="Jeffery 头像">
+        <h1 id="greeting">Welcome to Jeffery's World</h1>
+        <p>🌟 今日推荐: <span id="daily-quote"></span></p>
+        
         <p><a class="button fade-in" href="about.html">🧑‍🎓 了解 Jeffery</a></p>
         <p><a class="button fade-in" href="blog.html">🚀 发现我的想法</a></p>
         <p><a class="button fade-in" href="articles.md">🌿 值得一读的文章</a></p>
         <p><a class="button fade-in" href="photos.html">📷 查看我的摄影作品</a></p>
         <p><button class="button fade-in" onclick="goBack()">🔙 返回上一页</button></p>
 
-        <!-- 🎵 音乐播放器 -->
         <audio id="bg-music1" loop>
             <source src="music.mp3" type="audio/mp3">
         </audio>
         <p><button class="button fade-in" id="music-btn1" onclick="toggleMusic('bg-music1', 'music-btn1')">🎵 播放音乐 1</button></p>
+        <div class="progress-container">
+            <div id="progress1" class="progress-bar"></div>
+        </div>
 
         <audio id="bg-music2" loop>
             <source src="music2.mp3" type="audio/mp3">
         </audio>
         <p><button class="button fade-in" id="music-btn2" onclick="toggleMusic('bg-music2', 'music-btn2')">🎵 播放音乐 2</button></p>
+        <div class="progress-container">
+            <div id="progress2" class="progress-bar"></div>
+        </div>
     </div>
 
     <footer>© 2025 Jeffery. All Rights Reserved.</footer>
 
     <script>
-        // 黑暗模式记忆
-        document.addEventListener("DOMContentLoaded", function() {
-            if (localStorage.getItem("dark-mode") === "enabled") {
-                document.body.classList.add("dark-mode");
-            }
-        });
+        particlesJS.load('particles-js', 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.json', function() {});
+
         function toggleDarkMode() {
             document.body.classList.toggle("dark-mode");
             localStorage.setItem("dark-mode", document.body.classList.contains("dark-mode") ? "enabled" : "disabled");
         }
-
-        // 返回上一个页面
         function goBack() {
             window.history.back();
         }
-
-        // 滚动触发动画
-        document.addEventListener("scroll", function() {
-            let elements = document.querySelectorAll(".fade-in");
-            elements.forEach(el => {
-                let position = el.getBoundingClientRect().top;
-                let screenHeight = window.innerHeight;
-                if (position < screenHeight - 100) {
-                    el.classList.add("visible");
-                }
-            });
-        });
-
-        // 🎵 音乐播放功能（支持两个音频切换）
         function toggleMusic(audioId, btnId) {
             document.querySelectorAll("audio").forEach(audio => {
-                if (audio.id !== audioId) {
-                    audio.pause();
-                    audio.nextElementSibling.textContent = "🎵 播放音乐";
-                }
+                if (audio.id !== audioId) audio.pause();
             });
-
             var music = document.getElementById(audioId);
             var musicBtn = document.getElementById(btnId);
-
+            var progress = document.getElementById(`progress${audioId.charAt(audioId.length - 1)}`);
             if (music.paused) {
                 music.play();
                 musicBtn.textContent = "⏸ 暂停音乐";
+                music.ontimeupdate = function() {
+                    progress.style.width = (music.currentTime / music.duration) * 100 + "%";
+                };
             } else {
                 music.pause();
                 musicBtn.textContent = "🎵 播放音乐";
             }
         }
+        document.getElementById("daily-quote").textContent = ["保持热爱", "探索世界", "享受生活"][Math.floor(Math.random() * 3)];
     </script>
 </body>
 </html>
