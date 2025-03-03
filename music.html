@@ -8,7 +8,8 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background: #1e1e1e;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
             color: white;
             margin: 0;
             padding: 20px;
@@ -16,26 +17,34 @@
         .container {
             max-width: 600px;
             margin: auto;
-            background: #333;
+            background: rgba(0, 0, 0, 0.7);
             padding: 20px;
             border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         audio {
             width: 100%;
             margin-top: 10px;
         }
         .lyrics {
-            max-height: 200px;
+            max-height: 250px;
             overflow-y: auto;
-            text-align: left;
+            text-align: center;
             background: rgba(240, 240, 240, 0.9);
             border-radius: 10px;
             padding: 10px;
             color: black;
+            font-size: 18px;
+            line-height: 1.8;
+            transition: all 0.3s ease-in-out;
         }
         .highlight {
             color: #007aff;
             font-weight: bold;
+            font-size: 22px;
+        }
+        .lyrics p {
+            transition: 0.3s ease-in-out;
         }
     </style>
 </head>
@@ -84,10 +93,16 @@
 
         audio.addEventListener("timeupdate", function() {
             let time = audio.currentTime;
-            let activeLyric = lyricsData.find((l, i) => lyricsData[i + 1]?.time > time);
-            lyricsDiv.innerHTML = lyricsData.map(l => 
-                `<p class="${l === activeLyric ? 'highlight' : ''}">${l.text}</p>`
+            let activeIndex = lyricsData.findIndex((l, i) => lyricsData[i + 1]?.time > time);
+            lyricsDiv.innerHTML = lyricsData.map((l, index) => 
+                `<p class="${index === activeIndex ? 'highlight' : ''}">${l.text}</p>`
             ).join("");
+
+            // 自动滚动歌词，使当前播放的歌词行保持居中
+            let activeLine = document.querySelector(".highlight");
+            if (activeLine) {
+                lyricsDiv.scrollTop = activeLine.offsetTop - lyricsDiv.offsetHeight / 2;
+            }
         });
 
         loadSong("music.mp3", "lyrics1.lrc");
