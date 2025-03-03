@@ -19,46 +19,23 @@
             background: #333;
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-        }
-        h1 {
-            font-size: 24px;
         }
         audio {
             width: 100%;
             margin-top: 10px;
         }
-        button {
-            background: #007aff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            margin: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #005ecb;
-        }
-        #lyrics {
-            margin-top: 20px;
-            height: 200px;
-            overflow: hidden;
-            position: relative;
-            background: rgba(255, 255, 255, 0.1);
+        .lyrics {
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+            background: rgba(240, 240, 240, 0.9);
+            border-radius: 10px;
             padding: 10px;
-            border-radius: 8px;
+            color: black;
         }
-        .line {
-            font-size: 16px;
-            padding: 5px;
-            color: #aaa;
-            transition: 0.3s;
-        }
-        .active {
-            color: #00ffcc;
+        .highlight {
+            color: #007aff;
             font-weight: bold;
-            font-size: 18px;
         }
     </style>
 </head>
@@ -71,25 +48,16 @@
             <source id="audio-source" src="music.mp3" type="audio/mp3">
         </audio>
         
-        <div>
-            <button onclick="loadSong('music.mp3', 'lyrics1.lrc')">播放歌曲 1</button>
-            <button onclick="loadSong('music2.mp3', 'lyrics2.lrc')">播放歌曲 2</button>
-        </div>
+        <button onclick="loadSong('music.mp3', 'lyrics1.lrc')">🎵 歌曲 1</button>
+        <button onclick="loadSong('music2.mp3', 'lyrics2.lrc')">🎵 歌曲 2</button>
 
-        <label for="volume">🔊 音量调节：</label>
-        <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
-
-        <div id="lyrics"></div>
+        <div class="lyrics" id="lyrics"></div>
     </div>
 
     <script>
         let audio = document.getElementById("audio");
-        let lyricsContainer = document.getElementById("lyrics");
+        let lyricsDiv = document.getElementById("lyrics");
         let lyricsData = [];
-        
-        document.getElementById("volume").addEventListener("input", function() {
-            audio.volume = this.value;
-        });
 
         function loadSong(song, lyricsFile) {
             document.getElementById("audio-source").src = song;
@@ -104,43 +72,25 @@
         }
 
         function parseLyrics(text) {
-            lyricsContainer.innerHTML = "";
-            lyricsData = [];
-            let lines = text.split("\n");
-            for (let line of lines) {
+            lyricsDiv.innerHTML = "";
+            lyricsData = text.split("\n").map(line => {
                 let match = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
                 if (match) {
                     let time = parseInt(match[1]) * 60 + parseFloat(match[2]);
-                    let content = match[3].trim();
-                    lyricsData.push({ time, content });
-                    let p = document.createElement("p");
-                    p.classList.add("line");
-                    p.textContent = content;
-                    lyricsContainer.appendChild(p);
+                    return { time, text: match[3].trim() };
                 }
-            }
+            }).filter(Boolean);
         }
 
         audio.addEventListener("timeupdate", function() {
-            let currentTime = audio.currentTime;
-            let activeLine = null;
-            for (let i = 0; i < lyricsData.length; i++) {
-                if (lyricsData[i].time <= currentTime) {
-                    activeLine = i;
-                }
-            }
-            let lines = document.querySelectorAll(".line");
-            lines.forEach((line, index) => {
-                if (index === activeLine) {
-                    line.classList.add("active");
-                } else {
-                    line.classList.remove("active");
-                }
-            });
+            let time = audio.currentTime;
+            let activeLyric = lyricsData.find((l, i) => lyricsData[i + 1]?.time > time);
+            lyricsDiv.innerHTML = lyricsData.map(l => 
+                `<p class="${l === activeLyric ? 'highlight' : ''}">${l.text}</p>`
+            ).join("");
         });
 
-        // 默认加载第一首
-        loadSong("music.mp3", "lyrics2.lrc");
+        loadSong("music.mp3", "lyrics1.lrc");
     </script>
 
 </body>
