@@ -10,27 +10,21 @@
             text-align: center;
             background: url('background.jpg') no-repeat center center fixed;
             background-size: cover;
-            color: white;
+            color: black;
             margin: 0;
             padding: 20px;
         }
         .player-container {
-            max-width: 400px;
+            max-width: 600px;
             margin: auto;
-            background: rgba(0, 0, 0, 0.8); /* 深色背景 */
+            background: rgba(255, 255, 255, 0.85); /* 白色半透明背景 */
             padding: 20px;
             border-radius: 16px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
-        .album-art {
-            width: 100%;
-            max-width: 250px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-        }
         .song-title {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
             margin-top: 10px;
         }
@@ -52,47 +46,46 @@
         .controls {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 20px;
             margin-top: 15px;
         }
         .control-button {
             background: none;
             border: none;
-            font-size: 22px;
+            font-size: 24px;
             cursor: pointer;
-            color: white;
+            color: black;
         }
         .lyrics {
-            max-height: 180px;
+            max-height: 300px;
             overflow: hidden;
             text-align: center;
-            padding: 10px;
-            font-size: 16px;
+            padding: 20px;
+            font-size: 20px;
             line-height: 1.8;
             position: relative;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 10px;
-            margin-top: 10px;
+            margin-top: 20px;
         }
         .lyrics p {
-            margin: 5px 0;
+            margin: 8px 0;
             transition: all 0.3s ease-in-out;
         }
         .highlight {
             color: red;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 24px;
         }
     </style>
 </head>
 <body>
 
     <div class="player-container">
-        <img id="album-art" class="album-art" src="cover1.jpg" alt="歌曲封面">
-        <p class="song-title" id="song-title">歌曲 1</p>
+        <p class="song-title" id="song-title">无声的告别</p>
 
         <audio id="audio">
-            <source id="audio-source" src="music.mp3" type="audio/mp3">
+            <source id="audio-source" src="《无声的告别》.mp3" type="audio/mp3">
         </audio>
 
         <div class="progress-container" onclick="setProgress(event)">
@@ -115,13 +108,12 @@
         let audio = document.getElementById("audio");
         let progressBar = document.getElementById("progress-bar");
         let lyricsDiv = document.getElementById("lyrics-content");
-        let albumArt = document.getElementById("album-art");
         let songTitle = document.getElementById("song-title");
 
         let songs = [
-            { title: "歌曲 1", src: "music.mp3", cover: "cover1.jpg", lyrics: "lyrics1.lrc" },
-            { title: "歌曲 2", src: "music2.mp3", cover: "cover2.jpg", lyrics: "lyrics2.lrc" },
-            { title: "歌曲 3", src: "music3.mp3", cover: "cover3.jpg", lyrics: "lyrics3.lrc" }
+            { title: "无声的告别", src: "《无声的告别》.mp3", lyrics: "lyrics1.lrc" },
+            { title: "归途的灯光", src: "《归途的灯光》.mp3", lyrics: "lyrics2.lrc" },
+            { title: "纪念", src: "《纪念》.mp3", lyrics: "lyrics3.lrc" }
         ];
         let currentSongIndex = 0;
         let lyricsData = [];
@@ -130,7 +122,6 @@
             let song = songs[index];
             document.getElementById("audio-source").src = song.src;
             songTitle.textContent = song.title;
-            albumArt.src = song.cover;
             audio.load();
             fetchLyrics(song.lyrics);
         }
