@@ -64,6 +64,33 @@
             border-radius: 6px;
             cursor: pointer;
         }
+        /* 微信二维码弹窗样式 */
+        .wechat-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .wechat-modal img {
+            width: 200px;
+            height: 200px;
+            border-radius: 10px;
+        }
+        .close-btn {
+            margin-top: 10px;
+            background: red;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -80,6 +107,17 @@
         <p><a class="button" href="blog.html">🚀 发现我的想法</a></p>
         <p><a class="button" href="articles.md">🌿 值得一读的文章</a></p>
         <p><a class="button" href="photos.html">📷 查看我的摄影作品</a></p>
+
+        <!-- 微信好友按钮 -->
+        <p><button class="button" onclick="showWeChatQR()">💬 加我微信好友</button></p>
+    </div>
+
+    <!-- 微信二维码弹窗 -->
+    <div class="wechat-modal" id="wechat-modal">
+        <h2>📱 扫码加我微信</h2>
+        <img src="wechat_qr.jpg" alt="微信二维码">
+        <p>📌 长按识别二维码</p>
+        <button class="close-btn" onclick="closeWeChatQR()">关闭</button>
     </div>
 
     <footer>© 2025 Jeffery. All Rights Reserved.</footer>
@@ -93,6 +131,16 @@
         }
 
         document.getElementById("daily-quote").textContent = ["保持热爱", "探索世界", "享受生活"][Math.floor(Math.random() * 3)];
+
+        // 显示微信二维码弹窗
+        function showWeChatQR() {
+            document.getElementById("wechat-modal").style.display = "block";
+        }
+
+        // 关闭微信二维码弹窗
+        function closeWeChatQR() {
+            document.getElementById("wechat-modal").style.display = "none";
+        }
     </script>
 </body>
 </html>
