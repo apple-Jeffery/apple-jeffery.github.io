@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 Jeffery's Hub</title>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+    <style>
+        :root {
+            --bg-color: #f5f5f7;
+            --text-color: #333;
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --button-bg: rgba(0, 122, 255, 0.7);
+            --button-hover: linear-gradient(45deg, #ff4e50, #fc913a);
+        }
+        body.dark-mode {
+            --bg-color: #1c1c1e;
+            --text-color: #f5f5f7;
+            --card-bg: rgba(44, 44, 46, 0.6);
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
+            color: var(--text-color);
+            transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .button {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 24px;
+            background: var(--button-bg);
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 8px;
+            transition: 0.3s;
+            background-size: 200%;
+        }
+        .button:hover {
+            background: var(--button-hover);
+            transform: scale(1.05);
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        .toggle-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            background: var(--button-bg);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        /* 微信二维码弹窗样式 */
+        .wechat-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .wechat-modal img {
+            width: 200px;
+            height: 200px;
+            border-radius: 10px;
+        }
+        .close-btn {
+            margin-top: 10px;
+            background: red;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <header>🔥 Jeffery's Hub</header>
+    <button class="toggle-button" onclick="toggleDarkMode()">🌙</button>
+    
+    <div class="container">
+        <h1 id="greeting">Welcome to Jeffery's World</h1>
+        <p>🌟 今日推荐: <span id="daily-quote"></span></p>
+
+        <p><a class="button" href="music.html">🎵 我的音乐</a></p>
+        <p><a class="button" href="about.html">🧑‍🎓 了解 Jeffery</a></p>
+        <p><a class="button" href="blog.html">🚀 发现我的想法</a></p>
+        <p><a class="button" href="articles.md">🌿 值得一读的文章</a></p>
+        <p><a class="button" href="photos.html">📷 查看我的摄影作品</a></p>
+
+        <!-- ✅ 添加的情绪树洞跳转按钮 -->
+        <p><a class="button" href="https://apple-jeffery.github.io/emotion-tree/" target="_blank">🌙 Jeffery 的情绪树洞</a></p>
+
+        <!-- 微信好友按钮 -->
+        <p><button class="button" onclick="showWeChatQR()">💬 加我微信好友</button></p>
+    </div>
+
+    <!-- 微信二维码弹窗 -->
+    <div class="wechat-modal" id="wechat-modal">
+        <h2>📱 扫码加我微信</h2>
+        <img src="wechat_qr.jpg" alt="微信二维码">
+        <p>📌 长按识别二维码</p>
+        <button class="close-btn" onclick="closeWeChatQR()">关闭</button>
+    </div>
+
+    <footer>© 2025 Jeffery. All Rights Reserved.</footer>
+
+    <script>
+        particlesJS.load('particles-js', 'particles.json', function() {});
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+            localStorage.setItem("dark-mode", document.body.classList.contains("dark-mode") ? "enabled" : "disabled");
+        }
+
+        document.getElementById("daily-quote").textContent = ["保持热爱", "探索世界", "享受生活"][Math.floor(Math.random() * 3)];
+
+        // 显示微信二维码弹窗
+        function showWeChatQR() {
+            document.getElementById("wechat-modal").style.display = "block";
+        }
+
+        // 关闭微信二维码弹窗
+        function closeWeChatQR() {
+            document.getElementById("wechat-modal").style.display = "none";
+        }
+    </script>
+</body>
+</html>
