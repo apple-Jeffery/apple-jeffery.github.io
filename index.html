@@ -64,7 +64,6 @@
             border-radius: 6px;
             cursor: pointer;
         }
-        /* 微信二维码弹窗样式 */
         .wechat-modal {
             display: none;
             position: fixed;
@@ -97,26 +96,24 @@
     <div id="particles-js"></div>
     <header>🔥 Jeffery's Hub</header>
     <button class="toggle-button" onclick="toggleDarkMode()">🌙</button>
-
+    
     <div class="container">
         <h1 id="greeting">Welcome to Jeffery's World</h1>
         <p>🌟 今日推荐: <span id="daily-quote"></span></p>
 
-        <p><a class="button" href="music.html">🎵 我的音乐</a></p>
-        <p><a class="button" href="https://apple-jeffery.github.io/music-corner/" target="_blank">🎧 音乐角落（子网站）</a></p>
+        <!-- ✅ 修改后的音乐跳转按钮 -->
+        <p><a class="button" href="https://apple-jeffery.github.io/music-corner/" target="_blank">🎵 我的音乐角落</a></p>
+
         <p><a class="button" href="about.html">🧑‍🎓 了解 Jeffery</a></p>
         <p><a class="button" href="blog.html">🚀 发现我的想法</a></p>
         <p><a class="button" href="articles.md">🌿 值得一读的文章</a></p>
         <p><a class="button" href="photos.html">📷 查看我的摄影作品</a></p>
 
-        <!-- ✅ 添加的情绪树洞跳转按钮 -->
         <p><a class="button" href="https://apple-jeffery.github.io/emotion-tree/" target="_blank">🌙 Jeffery 的情绪树洞</a></p>
 
-        <!-- 微信好友按钮 -->
         <p><button class="button" onclick="showWeChatQR()">💬 加我微信好友</button></p>
     </div>
 
-    <!-- 微信二维码弹窗 -->
     <div class="wechat-modal" id="wechat-modal">
         <h2>📱 扫码加我微信</h2>
         <img src="wechat_qr.jpg" alt="微信二维码">
@@ -136,12 +133,10 @@
 
         document.getElementById("daily-quote").textContent = ["保持热爱", "探索世界", "享受生活"][Math.floor(Math.random() * 3)];
 
-        // 显示微信二维码弹窗
         function showWeChatQR() {
             document.getElementById("wechat-modal").style.display = "block";
         }
 
-        // 关闭微信二维码弹窗
         function closeWeChatQR() {
             document.getElementById("wechat-modal").style.display = "none";
         }
