@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 我的音乐播放器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: black;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.85); /* 白色半透明背景 */
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+        .lyrics {
+            max-height: 250px;
+            overflow: hidden;
+            text-align: center;
+            padding: 10px;
+            font-size: 18px;
+            line-height: 1.8;
+            position: relative;
+        }
+        .lyrics p {
+            margin: 5px 0;
+            transition: all 0.3s ease-in-out;
+        }
+        .highlight {
+            color: #007aff;
+            font-weight: bold;
+            font-size: 22px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🎵 我的音乐播放器</h1>
+        
+        <audio id="audio" controls>
+            <source id="audio-source" src="music.mp3" type="audio/mp3">
+        </audio>
+        
+        <button onclick="loadSong('music.mp3', 'lyrics1.lrc')">🎵 歌曲 1</button>
+        <button onclick="loadSong('music2.mp3', 'lyrics2.lrc')">🎵 歌曲 2</button>
+        <button onclick="loadSong('music3.mp3', 'lyrics3.lrc')">🎵 歌曲 3</button>
+
+        <div class="lyrics">
+            <div id="lyrics-content"></div>
+        </div>
+    </div>
+
+    <script>
+        let audio = document.getElementById("audio");
+        let lyricsDiv = document.getElementById("lyrics-content");
+        let lyricsData = [];
+
+        function loadSong(song, lyricsFile) {
+            document.getElementById("audio-source").src = song;
+            audio.load();
+            fetchLyrics(lyricsFile);
+        }
+
+        function fetchLyrics(file) {
+            fetch(file)
+                .then(response => response.text())
+                .then(text => parseLyrics(text));
+        }
+
+        function parseLyrics(text) {
+            lyricsDiv.innerHTML = "";
+            lyricsData = text.split("\n").map(line => {
+                let match = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
+                if (match) {
+                    let time = parseInt(match[1]) * 60 + parseFloat(match[2]);
+                    return { time, text: match[3].trim() };
+                }
+            }).filter(Boolean);
+
+            // 预填充歌词区域，避免滚动突兀
+            lyricsDiv.innerHTML = lyricsData.map(l => `<p>${l.text}</p>`).join("");
+        }
+
+        audio.addEventListener("timeupdate", function() {
+            let time = audio.currentTime;
+            let activeIndex = lyricsData.findIndex((l, i) => lyricsData[i + 1]?.time > time);
+            let lines = lyricsDiv.getElementsByTagName("p");
+
+            for (let i = 0; i < lines.length; i++) {
+                lines[i].classList.remove("highlight");
+            }
+
+            if (activeIndex !== -1) {
+                lines[activeIndex].classList.add("highlight");
+
+                // **歌词滚动居中**
+                let scrollOffset = lines[activeIndex].offsetTop - lyricsDiv.parentElement.offsetHeight / 2 + 20;
+                lyricsDiv.parentElement.scrollTo({
+                    top: scrollOffset,
+                    behavior: "smooth"
+                });
+            }
+        });
+
+        loadSong("music.mp3", "lyrics1.lrc");
+    </script>
+
+</body>
+</html>
