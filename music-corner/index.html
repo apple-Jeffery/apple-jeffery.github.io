@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎵 Jeffery 的音乐角落</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url('../background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+      color: #222;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #3366cc;
+      margin-bottom: 20px;
+    }
+    audio {
+      width: 100%;
+      margin-top: 15px;
+    }
+    .lyrics {
+      max-height: 280px;
+      overflow: hidden;
+      text-align: center;
+      padding: 10px;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+    .lyrics p {
+      margin: 5px 0;
+      transition: all 0.3s ease-in-out;
+    }
+    .highlight {
+      color: #007aff;
+      font-weight: bold;
+      font-size: 22px;
+    }
+    .button {
+      display: inline-block;
+      margin: 10px 8px;
+      padding: 10px 18px;
+      background: #337aff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .button:hover {
+      background: #1e60d1;
+      transform: scale(1.03);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎵 Jeffery 的音乐角落</h1>
+
+    <audio id="audio" controls>
+      <source id="audio-source" src="music.mp3" type="audio/mp3" />
+    </audio>
+
+    <div style="margin-top: 20px;">
+      <button class="button" onclick="loadSong('music.mp3', 'lyrics1.lrc')">🎶 歌曲 1</button>
+      <button class="button" onclick="loadSong('music2.mp3', 'lyrics2.lrc')">🎶 歌曲 2</button>
+      <button class="button" onclick="loadSong('music3.mp3', 'lyrics3.lrc')">🎶 歌曲 3</button>
+    </div>
+
+    <div class="lyrics">
+      <div id="lyrics-content"></div>
+    </div>
+  </div>
+
+  <script>
+    let audio = document.getElementById("audio");
+    let lyricsDiv = document.getElementById("lyrics-content");
+    let lyricsData = [];
+
+    function loadSong(song, lyricsFile) {
+      document.getElementById("audio-source").src = song;
+      audio.load();
+      fetchLyrics(lyricsFile);
+    }
+
+    function fetchLyrics(file) {
+      fetch(file)
+        .then(response => response.text())
+        .then(text => parseLyrics(text));
+    }
+
+    function parseLyrics(text) {
+      lyricsDiv.innerHTML = "";
+      lyricsData = text.split("\\n").map(line => {
+        let match = line.match(/\\[(\\d+):(\\d+\\.\\d+)\\](.*)/);
+        if (match) {
+          let time = parseInt(match[1]) * 60 + parseFloat(match[2]);
+          return { time, text: match[3].trim() };
+        }
+      }).filter(Boolean);
+      lyricsDiv.innerHTML = lyricsData.map(l => `<p>${l.text}</p>`).join("");
+    }
+
+    audio.addEventListener("timeupdate", function () {
+      let time = audio.currentTime;
+      let activeIndex = lyricsData.findIndex((l, i) => lyricsData[i + 1]?.time > time);
+      let lines = lyricsDiv.getElementsByTagName("p");
+
+      for (let i = 0; i < lines.length; i++) {
+        lines[i].classList.remove("highlight");
+      }
+
+      if (activeIndex !== -1) {
+        lines[activeIndex].classList.add("highlight");
+        let scrollOffset = lines[activeIndex].offsetTop - lyricsDiv.parentElement.offsetHeight / 2 + 20;
+        lyricsDiv.parentElement.scrollTo({
+          top: scrollOffset,
+          behavior: "smooth"
+        });
+      }
+    });
+
+    loadSong("music.mp3", "lyrics1.lrc");
+  </script>
+</body>
+</html>
