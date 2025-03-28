@@ -56,15 +56,20 @@
       padding: 10px;
       font-size: 18px;
       line-height: 1.8;
+      scroll-behavior: smooth;
+      position: relative;
     }
     .lyrics p {
       margin: 5px 0;
-      transition: all 0.3s ease-in-out;
+      transition: all 0.3s ease;
     }
-    .highlight {
-      color: #007aff;
+    .lyrics .highlight {
+      color: #ff3366;
       font-weight: bold;
-      font-size: 22px;
+      font-size: 24px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 2px 8px;
     }
     .button {
       display: inline-block;
@@ -143,12 +148,13 @@
       }
 
       if (activeIndex !== -1) {
-        lines[activeIndex].classList.add("highlight");
-        let scrollOffset = lines[activeIndex].offsetTop - lyricsDiv.parentElement.offsetHeight / 2 + 20;
-        lyricsDiv.parentElement.scrollTo({
-          top: scrollOffset,
-          behavior: "smooth"
-        });
+        const current = lines[activeIndex];
+        current.classList.add("highlight");
+
+        const containerHeight = lyricsDiv.clientHeight;
+        const offsetTop = current.offsetTop;
+        const scrollPos = offsetTop - containerHeight / 2 + current.clientHeight / 2;
+        lyricsDiv.scrollTo({ top: scrollPos, behavior: "smooth" });
       }
     });
 
