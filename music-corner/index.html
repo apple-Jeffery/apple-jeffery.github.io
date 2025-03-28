@@ -49,7 +49,7 @@
       width: 100%;
       margin-top: 15px;
     }
-    /* 让歌词容器可滚动，并设置一个最大高度 */
+    /* 歌词容器 */
     .lyrics {
       max-height: 280px;
       overflow-y: auto;
@@ -94,19 +94,16 @@
   <a href="https://apple-jeffery.github.io/" class="back-home">← 返回主页</a>
   <div class="container">
     <h1>🎵 Jeffery 的音乐角落</h1>
-
     <!-- 音频控件 -->
     <audio id="audio" controls>
       <source id="audio-source" src="music.mp3" type="audio/mp3" />
     </audio>
-
     <!-- 切歌按钮 -->
     <div style="margin-top: 20px;">
       <button class="button" onclick="loadSong('music.mp3', 'lyrics1.lrc')">🎶 无声的告别</button>
       <button class="button" onclick="loadSong('music2.mp3', 'lyrics2.lrc')">🎶 归途的灯光</button>
       <button class="button" onclick="loadSong('music3.mp3', 'lyrics3.lrc')">🎶 纪念</button>
     </div>
-
     <!-- 歌词容器 -->
     <div class="lyrics">
       <div id="lyrics-content"></div>
@@ -121,7 +118,7 @@
     // 切换歌曲并加载对应歌词
     function loadSong(song, lyricsFile) {
       document.getElementById("audio-source").src = song;
-      audio.load(); // 重新加载音频
+      audio.load();
       fetchLyrics(lyricsFile);
     }
 
@@ -135,7 +132,7 @@
 
     function parseLyrics(text) {
       lyricsData = text.split("\n").map(line => {
-        // 匹配格式：[分:秒.毫秒] 歌词内容
+        // 匹配格式：[mm:ss.xx] 歌词内容
         let match = line.match(/\[(\d+):(\d+(\.\d+)?)\](.*)/);
         if (match) {
           let minutes = parseInt(match[1], 10);
@@ -160,7 +157,7 @@
         line.classList.remove("highlight");
       }
 
-      // 遍历，找到最后一个时间小于等于 currentTime 的歌词行
+      // 找到最后一个时间小于等于 currentTime 的歌词行
       let activeIndex = 0;
       for (let i = 0; i < lyricsData.length; i++) {
         if (currentTime >= lyricsData[i].time) {
@@ -173,7 +170,7 @@
       // 高亮当前行
       lines[activeIndex].classList.add("highlight");
 
-      // 计算滚动，使高亮行居中
+      // 计算滚动位置，让高亮行居中
       const containerHeight = lyricsDiv.clientHeight;
       const lineOffsetTop = lines[activeIndex].offsetTop;
       const lineHeight = lines[activeIndex].clientHeight;
@@ -184,10 +181,9 @@
       });
     }
 
-    // 绑定音频播放进度事件
     audio.addEventListener("timeupdate", updateLyricsHighlight);
 
-    // 默认加载第一首歌曲
+    // 默认加载第一首歌
     loadSong("music.mp3", "lyrics1.lrc");
   </script>
 </body>
