@@ -50,18 +50,21 @@
       margin-top: 15px;
     }
     .lyrics {
-      max-height: 280px;
-      overflow: hidden;
+      height: 280px;
+      overflow-y: auto;
       text-align: center;
       padding: 10px;
       font-size: 18px;
       line-height: 1.8;
       scroll-behavior: smooth;
-      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     .lyrics p {
       margin: 5px 0;
       transition: all 0.3s ease;
+      width: 100%;
     }
     .lyrics .highlight {
       color: #ff3366;
@@ -150,11 +153,9 @@
       if (activeIndex !== -1) {
         const current = lines[activeIndex];
         current.classList.add("highlight");
-
         const containerHeight = lyricsDiv.clientHeight;
-        const offsetTop = current.offsetTop;
-        const scrollPos = offsetTop - containerHeight / 2 + current.clientHeight / 2;
-        lyricsDiv.scrollTo({ top: scrollPos, behavior: "smooth" });
+        const scrollOffset = current.offsetTop - containerHeight / 2 + current.clientHeight / 2;
+        lyricsDiv.scrollTo({ top: scrollOffset, behavior: "smooth" });
       }
     });
 
