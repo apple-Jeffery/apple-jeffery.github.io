@@ -1,38 +1,80 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>关于 Jeffery</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background: url('background.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: #333;
-        }
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 12px;
-        }
-        a { text-decoration: none; color: blue; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>关于 Jeffery</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      /* 可替换为你喜欢的背景图 */
+      background: url('about-background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 40px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 24px;
+      color: #3366cc;
+    }
+    p {
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .domain-links {
+      margin-top: 30px;
+    }
+    .domain-btn {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 12px 20px;
+      background: #337aff;
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .domain-btn:hover {
+      background: #1e60d1;
+      transform: scale(1.05);
+    }
+    .back-home {
+      display: inline-block;
+      margin-top: 20px;
+      color: #337aff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .back-home:hover {
+      color: #1e60d1;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>关于 Jeffery</h1>
-        <p>你好！我是 Jeffery，一个热爱科技、摄影和音乐的探索者。</p>
-        <p>我的兴趣：</p>
-        <ul>
-            <p><a class="button fade-in" href="articles1.md" >📷 摄影领域</a></p>
-             <p><a class="button fade-in" href="articles2.md" >🎸 音乐领域</a></p>
-         <ul>
-        </ul>
-        <a href="index.html">返回主页</a>
+  <div class="container">
+    <h1>关于 Jeffery</h1>
+    <p>你好！我是 Jeffery，一个热爱科技、摄影和音乐的探索者。</p>
+    <p>在这里，你可以了解我的兴趣与创作。</p>
+
+    <div class="domain-links">
+      <a class="domain-btn" href="photography.html">📷 摄影领域</a>
+      <a class="domain-btn" href="music.html">🎵 音乐领域</a>
     </div>
+
+    <p>
+      <a class="back-home" href="index.html">← 返回主页</a>
+    </p>
+  </div>
 </body>
 </html>
