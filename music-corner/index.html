@@ -49,14 +49,15 @@
       width: 100%;
       margin-top: 15px;
     }
+    /* 让歌词容器可滚动，并设置一个最大高度 */
     .lyrics {
       max-height: 280px;
-      overflow: hidden;
+      overflow-y: auto; /* 关键：改为auto滚动 */
       text-align: center;
       padding: 10px;
       font-size: 18px;
       line-height: 1.8;
-      scroll-behavior: smooth;
+      scroll-behavior: smooth; /* 平滑滚动 */
       position: relative;
     }
     .lyrics p {
@@ -94,16 +95,19 @@
   <div class="container">
     <h1>🎵 Jeffery 的音乐角落</h1>
 
+    <!-- 音频控件 -->
     <audio id="audio" controls>
       <source id="audio-source" src="music.mp3" type="audio/mp3" />
     </audio>
 
+    <!-- 切歌按钮，保持原有顺序和功能 -->
     <div style="margin-top: 20px;">
       <button class="button" onclick="loadSong('music.mp3', 'lyrics1.lrc')">🎶 无声的告别</button>
       <button class="button" onclick="loadSong('music2.mp3', 'lyrics2.lrc')">🎶 归途的灯光</button>
       <button class="button" onclick="loadSong('music3.mp3', 'lyrics3.lrc')">🎶 纪念</button>
     </div>
 
+    <!-- 歌词容器 -->
     <div class="lyrics">
       <div id="lyrics-content"></div>
     </div>
@@ -114,50 +118,92 @@
     let lyricsDiv = document.getElementById("lyrics-content");
     let lyricsData = [];
 
+    // 切换歌曲并加载对应歌词
     function loadSong(song, lyricsFile) {
       document.getElementById("audio-source").src = song;
-      audio.load();
+      audio.load(); // 重新加载音频
       fetchLyrics(lyricsFile);
     }
 
+    // 获取歌词文件
     function fetchLyrics(file) {
       fetch(file)
         .then(response => response.text())
         .then(text => parseLyrics(text));
     }
 
+    // 解析歌词并渲染到页面
     function parseLyrics(text) {
       lyricsDiv.innerHTML = "";
-      lyricsData = text.split("\n").map(line => {
-        let match = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
-        if (match) {
-          let time = parseInt(match[1]) * 60 + parseFloat(match[2]);
-          return { time, text: match[3].trim() };
-        }
-      }).filter(Boolean);
-      lyricsDiv.innerHTML = lyricsData.map(l => `<p>${l.text}</p>`).join("");
+      lyricsData = text
+        .split("\n")
+        .map(line => {
+          // 匹配 [分:秒.毫秒] 的时间标签
+          let match = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
+          if (match) {
+            let time = parseInt(match[1]) * 60 + parseFloat(match[2]);
+            return { time, text: match[3].trim() };
+          }
+        })
+        .filter(Boolean); // 过滤掉无效行
+
+      // 渲染歌词到页面
+      lyricsDiv.innerHTML = lyricsData
+        .map(l => `<p>${l.text}</p>`)
+        .join("");
     }
 
-    audio.addEventListener("timeupdate", function () {
+    // 根据当前播放时间，计算应该高亮哪一句，并滚动到中间
+    function updateLyricsHighlight() {
       let time = audio.currentTime;
-      let activeIndex = lyricsData.findIndex((l, i) => lyricsData[i + 1]?.time > time);
       let lines = lyricsDiv.getElementsByTagName("p");
 
+      // 找到当前所在的行索引
+      // 逻辑：当前time >=该行的time，且小于下一行的time
+      let activeIndex = lyricsData.findIndex((line, i) => {
+        // 如果下一行不存在，则说明最后一句
+        let nextLine = lyricsData[i + 1];
+        if (!nextLine) {
+          // 最后一行了
+          return time >= line.time;
+        } else {
+          // 在第i行与i+1行之间
+          return time >= line.time && time < nextLine.time;
+        }
+      });
+
+      // 如果找不到（在第一句之前），就默认高亮第一句
+      if (activeIndex === -1) {
+        activeIndex = 0;
+      }
+
+      // 先清除所有高亮
       for (let i = 0; i < lines.length; i++) {
         lines[i].classList.remove("highlight");
       }
 
-      if (activeIndex !== -1) {
-        const current = lines[activeIndex];
-        current.classList.add("highlight");
+      // 给当前行加高亮
+      lines[activeIndex].classList.add("highlight");
 
-        const containerHeight = lyricsDiv.clientHeight;
-        const offsetTop = current.offsetTop;
-        const scrollPos = offsetTop - containerHeight / 2 + current.clientHeight / 2;
-        lyricsDiv.scrollTo({ top: scrollPos, behavior: "smooth" });
-      }
-    });
+      // 让当前行保持在歌词容器的中间位置
+      const containerHeight = lyricsDiv.clientHeight;       // 可视容器高度
+      const lineOffsetTop = lines[activeIndex].offsetTop;   // 当前行相对容器顶部的距离
+      const lineHeight = lines[activeIndex].clientHeight;   // 当前行高度
 
+      // 计算滚动位置，让高亮行居中
+      const scrollPos = lineOffsetTop - (containerHeight / 2) + (lineHeight / 2);
+
+      // 滚动到指定位置
+      lyricsDiv.scrollTo({
+        top: scrollPos,
+        behavior: "smooth"
+      });
+    }
+
+    // 当音频时间变化时，更新歌词高亮和滚动
+    audio.addEventListener("timeupdate", updateLyricsHighlight);
+
+    // 页面加载时，默认先加载一首歌
     loadSong("music.mp3", "lyrics1.lrc");
   </script>
 </body>
