@@ -49,7 +49,7 @@
       width: 100%;
       margin-top: 15px;
     }
-    /* 歌词容器设置 */
+    /* 让歌词容器可滚动，并设置一个最大高度 */
     .lyrics {
       max-height: 280px;
       overflow-y: auto;
@@ -94,16 +94,19 @@
   <a href="https://apple-jeffery.github.io/" class="back-home">← 返回主页</a>
   <div class="container">
     <h1>🎵 Jeffery 的音乐角落</h1>
+
     <!-- 音频控件 -->
     <audio id="audio" controls>
       <source id="audio-source" src="music.mp3" type="audio/mp3" />
     </audio>
+
     <!-- 切歌按钮 -->
     <div style="margin-top: 20px;">
       <button class="button" onclick="loadSong('music.mp3', 'lyrics1.lrc')">🎶 无声的告别</button>
       <button class="button" onclick="loadSong('music2.mp3', 'lyrics2.lrc')">🎶 归途的灯光</button>
       <button class="button" onclick="loadSong('music3.mp3', 'lyrics3.lrc')">🎶 纪念</button>
     </div>
+
     <!-- 歌词容器 -->
     <div class="lyrics">
       <div id="lyrics-content"></div>
@@ -132,7 +135,7 @@
 
     function parseLyrics(text) {
       lyricsData = text.split("\n").map(line => {
-        // 正则匹配 [分:秒.毫秒] 歌词 格式
+        // 匹配格式：[分:秒.毫秒] 歌词内容
         let match = line.match(/\[(\d+):(\d+(\.\d+)?)\](.*)/);
         if (match) {
           let minutes = parseInt(match[1], 10);
@@ -143,30 +146,30 @@
         }
       }).filter(Boolean);
 
-      // 渲染歌词
+      // 渲染歌词到页面
       lyricsDiv.innerHTML = lyricsData.map(item => `<p>${item.text}</p>`).join("");
     }
 
-    // 更新高亮歌词并滚动
     function updateLyricsHighlight() {
-      let time = audio.currentTime;
-      let lines = lyricsDiv.getElementsByTagName("p");
-      if (!lines.length) return;
+      const currentTime = audio.currentTime;
+      const lines = lyricsDiv.getElementsByTagName("p");
+      if (!lyricsData.length || !lines.length) return;
 
-      // 循环确定当前活动行：最后一个其时间小于等于当前time的行
+      // 清除所有高亮
+      for (let line of lines) {
+        line.classList.remove("highlight");
+      }
+
+      // 遍历，找到最后一个时间小于等于 currentTime 的歌词行
       let activeIndex = 0;
       for (let i = 0; i < lyricsData.length; i++) {
-        if (time >= lyricsData[i].time) {
+        if (currentTime >= lyricsData[i].time) {
           activeIndex = i;
         } else {
           break;
         }
       }
 
-      // 移除所有高亮
-      for (let line of lines) {
-        line.classList.remove("highlight");
-      }
       // 高亮当前行
       lines[activeIndex].classList.add("highlight");
 
@@ -175,13 +178,16 @@
       const lineOffsetTop = lines[activeIndex].offsetTop;
       const lineHeight = lines[activeIndex].clientHeight;
       const scrollPos = lineOffsetTop - (containerHeight / 2) + (lineHeight / 2);
-      lyricsDiv.scrollTop = scrollPos;
+      lyricsDiv.scrollTo({
+        top: scrollPos,
+        behavior: "smooth"
+      });
     }
 
-    // 每次播放进度更新时触发
+    // 绑定音频播放进度事件
     audio.addEventListener("timeupdate", updateLyricsHighlight);
 
-    // 默认加载第一首歌
+    // 默认加载第一首歌曲
     loadSong("music.mp3", "lyrics1.lrc");
   </script>
 </body>
