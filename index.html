@@ -183,7 +183,8 @@
     <a class="button" href="https://apple-jeffery.github.io/music-corner/" target="_blank">🎵 我的音乐角落</a>
     <a class="button" href="about.html">🧑‍🎓 了解 Jeffery</a>
     <a class="button" href="blog.html">🚀 发现我的想法</a>
-    <a class="button" href="articles.md">🌿 值得一读的文章</a>
+    <!-- 只改这里，将 href 从 articles.md 改为 article-luxun.html -->
+    <a class="button" href="article-luxun.html">🌿 值得一读的文章</a>
     <a class="button" href="https://apple-jeffery.github.io/emotion-tree/" target="_blank">🌙 Jeffery 的情绪树洞</a>
     <a class="button" href="https://apple-jeffery.github.io/photo-gallery/" target="_blank">🖼️ Jeffery 的图图角落</a>
     <button class="button" onclick="showWeChatQR()">💬 加我微信好友</button>
