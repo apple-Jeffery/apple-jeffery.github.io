@@ -50,21 +50,18 @@
       margin-top: 15px;
     }
     .lyrics {
-      height: 280px;
-      overflow-y: auto;
+      max-height: 280px;
+      overflow: hidden;
       text-align: center;
       padding: 10px;
       font-size: 18px;
       line-height: 1.8;
       scroll-behavior: smooth;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      position: relative;
     }
     .lyrics p {
       margin: 5px 0;
       transition: all 0.3s ease;
-      width: 100%;
     }
     .lyrics .highlight {
       color: #ff3366;
@@ -102,9 +99,9 @@
     </audio>
 
     <div style="margin-top: 20px;">
-      <button class="button" onclick="loadSong('music.mp3', 'lyrics1.lrc')">🎶 歌曲 1</button>
-      <button class="button" onclick="loadSong('music2.mp3', 'lyrics2.lrc')">🎶 歌曲 2</button>
-      <button class="button" onclick="loadSong('music3.mp3', 'lyrics3.lrc')">🎶 歌曲 3</button>
+      <button class="button" onclick="loadSong('music.mp3', 'lyrics1.lrc')">🎶 无声的告别</button>
+      <button class="button" onclick="loadSong('music2.mp3', 'lyrics2.lrc')">🎶 归途的灯光</button>
+      <button class="button" onclick="loadSong('music3.mp3', 'lyrics3.lrc')">🎶 纪念</button>
     </div>
 
     <div class="lyrics">
@@ -153,9 +150,11 @@
       if (activeIndex !== -1) {
         const current = lines[activeIndex];
         current.classList.add("highlight");
+
         const containerHeight = lyricsDiv.clientHeight;
-        const scrollOffset = current.offsetTop - containerHeight / 2 + current.clientHeight / 2;
-        lyricsDiv.scrollTo({ top: scrollOffset, behavior: "smooth" });
+        const offsetTop = current.offsetTop;
+        const scrollPos = offsetTop - containerHeight / 2 + current.clientHeight / 2;
+        lyricsDiv.scrollTo({ top: scrollPos, behavior: "smooth" });
       }
     });
 
