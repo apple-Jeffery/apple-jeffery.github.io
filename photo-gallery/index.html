@@ -113,7 +113,7 @@
     }
     .tag {
       font-size: 12px;
-      color: #888;
+      color: var(--text-color);
     }
     .like-btn {
       position: absolute;
@@ -151,26 +151,11 @@
       display: none;
       cursor: pointer;
     }
-    .egg {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
-      z-index: 9999;
-    }
-    .egg h3 {
-      margin-top: 0;
-    }
     footer {
       margin-top: 60px;
       text-align: center;
       font-size: 13px;
-      color: #aaa;
+      color: #eee;
     }
   </style>
 </head>
@@ -189,34 +174,41 @@
   </div>
   <div id="cute" class="gallery active">
     <div class="photo-card">
-      <img src="山谷之上的山 绘画 12k风景壁纸 MACGF.COM.jpg" alt="山谷之上的山" onclick="zoomImg(this); showEgg();">
+      <img src="山谷之上的山 绘画 12k风景壁纸 MACGF.COM.jpg" alt="山谷之上的山" onclick="zoomImg(this)">
       <button class="like-btn" onclick="like(this, 'like1')">❤️</button>
       <div class="caption">山谷之上的山</div>
       <div class="tag">📅 上传于 2025-03-28</div>
     </div>
     <div class="photo-card">
-      <img src="猫 沙发 趴 阳光 12k动物壁纸 MACGF.COM.jpg" alt="阳光猫" onclick="zoomImg(this); showEgg();">
+      <img src="猫 沙发 趴 阳光 12k动物壁纸 MACGF.COM.jpg" alt="阳光猫" onclick="zoomImg(this)">
       <button class="like-btn" onclick="like(this, 'like2')">❤️</button>
       <div class="caption">阳光猫</div>
+      <div class="tag">📅 上传于 2025-03-28</div>
+    </div>
+    <div class="photo-card">
+      <img src="魔女宅急便 宫崎骏 动漫壁纸.jpg" alt="魔女宅急便" onclick="zoomImg(this)">
+      <button class="like-btn" onclick="like(this, 'like3')">❤️</button>
+      <div class="caption">魔女宅急便</div>
+      <div class="tag">📅 上传于 2025-03-28</div>
+    </div>
+    <div class="photo-card">
+      <img src="魔女宅急便 小魔女琪琪 黑猫 房间 12k动漫壁纸.jpg" alt="琪琪与黑猫" onclick="zoomImg(this)">
+      <button class="like-btn" onclick="like(this, 'like4')">❤️</button>
+      <div class="caption">琪琪与黑猫</div>
       <div class="tag">📅 上传于 2025-03-28</div>
     </div>
     <button class="more-btn">我还想看更多</button>
   </div>
   <div id="daily" class="gallery">
-    <p style="text-align:center;color:#999;font-style:italic">这里空空的，还没有上传内容喔~</p>
+    <p style="text-align:center;color:#eee;font-style:italic">这里空空的，还没有上传内容喔~</p>
   </div>
   <div id="anime" class="gallery">
-    <p style="text-align:center;color:#999;font-style:italic">这里空空的，还没有上传内容喔~</p>
+    <p style="text-align:center;color:#eee;font-style:italic">这里空空的，还没有上传内容喔~</p>
   </div>
   <div id="travel" class="gallery">
-    <p style="text-align:center;color:#999;font-style:italic">旅行照片待补充中…</p>
+    <p style="text-align:center;color:#eee;font-style:italic">旅行照片待补充中…</p>
   </div>
   <button id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-  <div id="egg" class="egg">
-    <h3>🎉 彩蛋来了！</h3>
-    <p>你点开了隐藏的小秘密～</p>
-    <button onclick="document.getElementById('egg').style.display='none'">关闭</button>
-  </div>
   <footer>这个角落由 Jeffery 温柔整理，愿你在这里感受到一丝小确幸 ✨</footer>
   <script>
     function showCategory(id) {
@@ -266,10 +258,6 @@
       overlay.innerHTML = `<img src="${src}" style="max-width:90%; max-height:90%; border-radius:10px;">`;
       overlay.onclick = () => document.body.removeChild(overlay);
       document.body.appendChild(overlay);
-    }
-    function showEgg() {
-      const egg = document.getElementById('egg');
-      egg.style.display = 'block';
     }
     window.onscroll = () => {
       document.getElementById("backTop").style.display = window.scrollY > 300 ? "block" : "none";
