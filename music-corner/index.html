@@ -52,7 +52,7 @@
     /* 让歌词容器可滚动，并设置一个最大高度 */
     .lyrics {
       max-height: 280px;
-      overflow-y: auto; /* 关键：改为auto滚动 */
+      overflow-y: auto; /* 关键：可滚动 */
       text-align: center;
       padding: 10px;
       font-size: 18px;
@@ -138,11 +138,14 @@
       lyricsData = text
         .split("\n")
         .map(line => {
-          // 匹配 [分:秒.毫秒] 的时间标签
-          let match = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
+          // 匹配 [分:秒.毫秒] 的时间标签, 例如 [01:23.45] 或 [0:45.00]
+          let match = line.match(/\[(\d+):(\d+(\.\d+)?)\](.*)/);
           if (match) {
-            let time = parseInt(match[1]) * 60 + parseFloat(match[2]);
-            return { time, text: match[3].trim() };
+            let minutes = parseInt(match[1], 10);
+            let seconds = parseFloat(match[2]);
+            let time = minutes * 60 + seconds;
+            let lyric = match[4].trim();
+            return { time, text: lyric };
           }
         })
         .filter(Boolean); // 过滤掉无效行
@@ -153,36 +156,32 @@
         .join("");
     }
 
-    // 根据当前播放时间，计算应该高亮哪一句，并滚动到中间
+    // 播放进度变化时，更新高亮和滚动
+    audio.addEventListener("timeupdate", updateLyricsHighlight);
+
     function updateLyricsHighlight() {
       let time = audio.currentTime;
       let lines = lyricsDiv.getElementsByTagName("p");
 
-      // 找到当前所在的行索引
-      // 逻辑：当前time >=该行的time，且小于下一行的time
-      let activeIndex = lyricsData.findIndex((line, i) => {
-        // 如果下一行不存在，则说明最后一句
-        let nextLine = lyricsData[i + 1];
-        if (!nextLine) {
-          // 最后一行了
-          return time >= line.time;
-        } else {
-          // 在第i行与i+1行之间
-          return time >= line.time && time < nextLine.time;
-        }
-      });
+      // 如果还没有加载歌词数据或没有行，直接返回
+      if (!lyricsData.length || !lines.length) return;
 
-      // 如果找不到（在第一句之前），就默认高亮第一句
-      if (activeIndex === -1) {
-        activeIndex = 0;
-      }
-
-      // 先清除所有高亮
+      // 清除所有高亮
       for (let i = 0; i < lines.length; i++) {
         lines[i].classList.remove("highlight");
       }
 
-      // 给当前行加高亮
+      // 找到当前应该高亮的行：时间小于等于当前time的最后一行
+      let activeIndex = 0;
+      for (let i = 0; i < lyricsData.length; i++) {
+        if (time >= lyricsData[i].time) {
+          activeIndex = i;
+        } else {
+          break;
+        }
+      }
+
+      // 高亮当前行
       lines[activeIndex].classList.add("highlight");
 
       // 让当前行保持在歌词容器的中间位置
@@ -193,15 +192,11 @@
       // 计算滚动位置，让高亮行居中
       const scrollPos = lineOffsetTop - (containerHeight / 2) + (lineHeight / 2);
 
-      // 滚动到指定位置
       lyricsDiv.scrollTo({
         top: scrollPos,
         behavior: "smooth"
       });
     }
-
-    // 当音频时间变化时，更新歌词高亮和滚动
-    audio.addEventListener("timeupdate", updateLyricsHighlight);
 
     // 页面加载时，默认先加载一首歌
     loadSong("music.mp3", "lyrics1.lrc");
