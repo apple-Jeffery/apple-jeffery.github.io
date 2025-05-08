@@ -5,65 +5,136 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>📅 Jeffery 的超级时间表</title>
   <style>
-    /* 省略：全局变量、布局、表格、模态样式（已优化） */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #eef2f7;
+      color: #222;
+    }
+    header {
+      background: #337aff;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+      min-height: 80px;
+    }
+    th {
+      background: #1e60d1;
+      color: white;
+    }
+    td[contenteditable] {
+      background: #f9f9f9;
+      cursor: text;
+    }
+    .toolbar {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .toolbar button {
+      margin: 0 5px;
+      padding: 8px 16px;
+      border: none;
+      background: #337aff;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <a href="index.html" class="back-home">← 返回主页</a>
-  <div class="wrapper">
-    <div class="card">
-      <h1>📅 Jeffery 的超级时间表</h1>
-      <div class="controls">
-        <button id="toggle-view">切到月视图</button>
-        <input type="date" id="date-picker">
-        <button id="today-btn">回到今天</button>
-        <input type="text" id="search" placeholder="🔍 搜索关键字">
-        <button id="clear-btn" class="danger">清空筛选</button>
-        <button id="export-btn">导出 JSON</button>
-        <input type="file" id="import-input" accept="application/json" hidden>
-        <button id="import-btn">导入 JSON</button>
-        <button id="print-btn">🖨️ 打印</button>
-        <button id="theme-btn">🌙 暗/亮</button>
-      </div>
-      <table id="schedule-table"></table>
+  <header>📅 Jeffery 的超级时间表</header>
+  <div class="container">
+    <div class="toolbar">
+      <button onclick="clearTable()">清空表格</button>
+      <button onclick="saveSchedule()">保存</button>
+      <button onclick="loadSchedule()">加载</button>
     </div>
+    <table id="timetable">
+      <thead>
+        <tr>
+          <th>时间</th>
+          <th>周一</th>
+          <th>周二</th>
+          <th>周三</th>
+          <th>周四</th>
+          <th>周五</th>
+          <th>周六</th>
+          <th>周日</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 动态生成时间行 -->
+      </tbody>
+    </table>
   </div>
 
-  <div class="mask" id="mask">
-    <div class="modal" tabindex="-1">
-      <h3 id="modal-title">新建事项</h3>
-      <label>标题</label>
-      <input id="m-title" type="text" />
-      <label>备注</label>
-      <textarea id="m-note"></textarea>
-      <div class="row">
-        <div>
-          <label>开始小时</label>
-          <select id="m-hour"></select>
-        </div>
-        <div>
-          <label>时长(h)</label>
-          <select id="m-dur"></select>
-        </div>
-      </div>
-      <label>分类颜色</label>
-      <select id="m-cat">
-        <option value="">默认蓝</option>
-        <option value="red">红</option>
-        <option value="green">绿</option>
-        <option value="yellow">黄</option>
-        <option value="purple">紫</option>
-      </select>
-      <div class="btn-row">
-        <button class="cancel" id="m-cancel">取消</button>
-        <button class="delete" id="m-delete" style="display:none;">删除</button>
-        <button class="save" id="m-save">保存</button>
-      </div>
-    </div>
-  </div>
+  <script>
+    const timetable = document.querySelector("#timetable tbody");
 
-<script>
-  // 省略：localStorage 保存逻辑、事件监听、渲染、快捷键整合脚本
-</script>
+    function generateTimeTable() {
+      timetable.innerHTML = '';
+      for (let hour = 8; hour <= 20; hour++) {
+        const tr = document.createElement("tr");
+        const label = document.createElement("td");
+        label.textContent = `${hour}:00 - ${hour+1}:00`;
+        tr.appendChild(label);
+
+        for (let i = 0; i < 7; i++) {
+          const td = document.createElement("td");
+          td.setAttribute("contenteditable", true);
+          td.dataset.time = `${hour}`;
+          td.dataset.day = `${i}`;
+          tr.appendChild(td);
+        }
+
+        timetable.appendChild(tr);
+      }
+    }
+
+    function saveSchedule() {
+      const cells = document.querySelectorAll("#timetable td[contenteditable]");
+      const data = Array.from(cells).map(td => ({
+        day: td.dataset.day,
+        time: td.dataset.time,
+        content: td.innerText.trim()
+      }));
+      localStorage.setItem("jeffery-schedule", JSON.stringify(data));
+      alert("✅ 保存成功！");
+    }
+
+    function loadSchedule() {
+      const saved = JSON.parse(localStorage.getItem("jeffery-schedule") || "[]");
+      for (const item of saved) {
+        const selector = `#timetable td[data-day='${item.day}'][data-time='${item.time}']`;
+        const cell = document.querySelector(selector);
+        if (cell) cell.innerText = item.content;
+      }
+    }
+
+    function clearTable() {
+      document.querySelectorAll("#timetable td[contenteditable]").forEach(td => td.innerText = "");
+    }
+
+    generateTimeTable();
+    loadSchedule();
+  </script>
 </body>
 </html>
