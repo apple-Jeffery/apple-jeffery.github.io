@@ -16,15 +16,16 @@
       color: white;
       padding: 20px;
       text-align: center;
-      font-size: 24px;
+      font-size: 26px;
+      letter-spacing: 1px;
     }
     .container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 20px auto;
       padding: 20px;
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
     table {
       width: 100%;
@@ -32,17 +33,21 @@
     }
     th, td {
       border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
-      min-height: 80px;
+      padding: 10px;
+      text-align: top;
+      vertical-align: top;
     }
     th {
       background: #1e60d1;
       color: white;
+      font-size: 16px;
     }
     td[contenteditable] {
-      background: #f9f9f9;
-      cursor: text;
+      background: #fdfdfd;
+      min-height: 100px;
+      height: 100px;
+      font-size: 14px;
+      overflow-y: auto;
     }
     .toolbar {
       margin-bottom: 20px;
@@ -50,12 +55,31 @@
     }
     .toolbar button {
       margin: 0 5px;
-      padding: 8px 16px;
+      padding: 10px 20px;
       border: none;
       background: #337aff;
       color: white;
-      border-radius: 6px;
+      border-radius: 8px;
+      font-size: 14px;
       cursor: pointer;
+    }
+    .tasklist {
+      margin-top: 30px;
+    }
+    .tasklist h2 {
+      font-size: 20px;
+      color: #337aff;
+    }
+    .tasklist textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      resize: vertical;
+      box-sizing: border-box;
+      background: #fcfcfc;
     }
   </style>
 </head>
@@ -80,10 +104,13 @@
           <th>周日</th>
         </tr>
       </thead>
-      <tbody>
-        <!-- 动态生成时间行 -->
-      </tbody>
+      <tbody></tbody>
     </table>
+
+    <div class="tasklist">
+      <h2>📌 我的任务清单</h2>
+      <textarea id="task-list" placeholder="在这里记录今天要完成的任务，例如：\n- 完成英语作业\n- 练习吉他30分钟\n- 给妈妈打电话"></textarea>
+    </div>
   </div>
 
   <script>
@@ -104,7 +131,6 @@
           td.dataset.day = `${i}`;
           tr.appendChild(td);
         }
-
         timetable.appendChild(tr);
       }
     }
@@ -117,6 +143,7 @@
         content: td.innerText.trim()
       }));
       localStorage.setItem("jeffery-schedule", JSON.stringify(data));
+      localStorage.setItem("jeffery-tasks", document.getElementById("task-list").value);
       alert("✅ 保存成功！");
     }
 
@@ -127,10 +154,13 @@
         const cell = document.querySelector(selector);
         if (cell) cell.innerText = item.content;
       }
+      const tasks = localStorage.getItem("jeffery-tasks") || "";
+      document.getElementById("task-list").value = tasks;
     }
 
     function clearTable() {
       document.querySelectorAll("#timetable td[contenteditable]").forEach(td => td.innerText = "");
+      document.getElementById("task-list").value = "";
     }
 
     generateTimeTable();
