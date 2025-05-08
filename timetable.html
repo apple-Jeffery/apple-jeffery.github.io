@@ -18,6 +18,21 @@
       text-align: center;
       font-size: 26px;
       letter-spacing: 1px;
+      position: relative;
+    }
+    .top-link {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+    .top-link a {
+      display: inline-block;
+      padding: 8px 14px;
+      background: #1e60d1;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 14px;
     }
     .container {
       max-width: 1000px;
@@ -81,23 +96,15 @@
       box-sizing: border-box;
       background: #fcfcfc;
     }
-    .back-link {
-      margin-top: 30px;
-      text-align: center;
-    }
-    .back-link a {
-      display: inline-block;
-      padding: 10px 20px;
-      background: #1e60d1;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-size: 15px;
-    }
   </style>
 </head>
 <body>
-  <header>📅 Jeffery 的超级时间表</header>
+  <header>
+    <div class="top-link">
+      <a href="https://apple-jeffery.github.io/index.html">← 返回主网站</a>
+    </div>
+    📅 Jeffery 的超级时间表
+  </header>
   <div class="container">
     <div class="toolbar">
       <button onclick="clearTable()">清空表格</button>
@@ -123,10 +130,6 @@
     <div class="tasklist">
       <h2>📌 我的任务清单</h2>
       <textarea id="task-list" placeholder="在这里记录今天要完成的任务，例如：\n- 完成英语作业\n- 练习吉他30分钟\n- 给妈妈打电话"></textarea>
-    </div>
-
-    <div class="back-link">
-      <a href="https://apple-jeffery.github.io/index.html">← 返回主网站</a>
     </div>
   </div>
 
