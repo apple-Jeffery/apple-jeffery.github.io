@@ -1,677 +1,424 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🎧 Jeffery Music Room</title>
-  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
-  <style>
-    :root {
-      --bg-color: #f0f2f5;
-      --text-color: #222;
-      --card-bg: rgba(255, 255, 255, 0.5);
-      --button-bg: rgba(0, 122, 255, 0.7);
-      --button-hover: linear-gradient(45deg, rgba(111,177,252,0.8), rgba(67,100,247,0.8));
-      --header-color: #fdfdfd;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jeffery Cloud Music</title>
 
-    body.dark-mode {
-      --bg-color: #1c1c1e;
-      --text-color: #f5f5f7;
-      --card-bg: rgba(44, 44, 46, 0.75);
-      --button-bg: rgba(100, 100, 255, 0.7);
-      --button-hover: linear-gradient(45deg, rgba(111,177,252,0.3), rgba(67,100,247,0.6));
-      --header-color: #ffffff;
-    }
+<style>
+/* ========== 全局背景与布局 ========== */
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: url("main-background.jpg") no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+}
 
-    /* 背景 & 全局 */
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: "Segoe UI", sans-serif;
-      background: url("main-background.jpg") no-repeat center center fixed;
-      background-size: cover;
-      color: var(--text-color);
-      transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
-      position: relative;
-      min-height: 100vh;
-    }
+/* 容器布局 */
+.player-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    background: rgba(0,0,0,0.45);
+    border-radius: 20px;
+    backdrop-filter: blur(16px);
+}
 
-    #particles-js {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
+/* ========== 左侧播放列表 ========== */
+.sidebar {
+    background: rgba(255,255,255,0.1);
+    padding: 16px;
+    border-radius: 16px;
+    height: 620px;
+    overflow-y: auto;
+}
 
-    header {
-      color: var(--header-color);
-      font-size: 28px;
-      margin-top: 30px;
-      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
-      text-align: center;
-    }
+.sidebar h2 {
+    margin: 0 0 15px;
+    font-size: 20px;
+}
 
-    .toggle-button {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 10px;
-      background: var(--button-bg);
-      color: #fff;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      border: none;
-      transition: all 0.3s ease;
-      z-index: 10;
-    }
+.song-item {
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.08);
+    cursor: pointer;
+    transition: 0.2s;
+}
 
-    .toggle-button:hover {
-      background: var(--button-hover);
-      transform: scale(1.03);
-    }
+.song-item:hover {
+    background: rgba(255,255,255,0.2);
+}
 
-    .container {
-      max-width: 1100px;
-      margin: 40px auto 30px;
-      padding: 24px;
-      background: var(--card-bg);
-      border-radius: 20px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-    }
+.song-item.active {
+    background: #00bfff;
+    color: #000;
+}
 
-    /* 播放器整体布局：左列表 + 右主界面 */
-    .player-layout {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 24px;
-    }
+/* ========== 右侧播放区 ========== */
+.main-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
-    /* 左侧播放列表区域 */
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+/* 封面区域 */
+.cover-box {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
 
-    .sidebar-title {
-      font-size: 20px;
-      font-weight: 600;
-    }
+.cover {
+    width: 180px;
+    height: 180px;
+    border-radius: 16px;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
 
-    .upload-label {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 14px;
-      background: var(--button-bg);
-      color: #fff;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      margin-top: 4px;
-      transition: all 0.3s ease;
-    }
+.song-info h1 {
+    margin: 0;
+    font-size: 32px;
+}
+.song-info p {
+    margin: 8px 0 0;
+    opacity: 0.8;
+}
 
-    .upload-label span {
-      margin-left: 4px;
-    }
+/* ========== 控制区 ========== */
+.controls {
+    background: rgba(255,255,255,0.1);
+    padding: 18px;
+    border-radius: 14px;
+}
 
-    .upload-label:hover {
-      background: var(--button-hover);
-      transform: scale(1.03);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
+.progress-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.progress {
+    flex: 1;
+    height: 6px;
+}
+.time {
+    width: 40px;
+    text-align: center;
+}
+.btn-row {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+.ctrl-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.ctrl-btn:hover {
+    transform: scale(1.1);
+}
 
-    #file-input {
-      display: none;
-    }
-
-    .playlist {
-      list-style: none;
-      padding: 0;
-      margin: 12px 0 0;
-      max-height: 420px;
-      overflow-y: auto;
-    }
-
-    .playlist-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      margin-bottom: 6px;
-      transition: background 0.2s ease, transform 0.15s ease;
-    }
-
-    .playlist-item:hover {
-      background: rgba(255, 255, 255, 0.6);
-      transform: translateY(-1px);
-    }
-
-    body.dark-mode .playlist-item:hover {
-      background: rgba(88, 88, 90, 0.9);
-    }
-
-    .playlist-item.active {
-      background: rgba(0, 122, 255, 0.18);
-      border-left: 4px solid rgba(0, 122, 255, 0.9);
-    }
-
-    .track-title {
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      text-align: left;
-      padding-right: 8px;
-    }
-
-    .track-duration {
-      font-size: 12px;
-      opacity: 0.7;
-      min-width: 50px;
-      text-align: right;
-    }
-
-    /* 右侧主播放区域 */
-    .main-panel {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .now-playing {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      padding: 18px 20px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.6);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-    }
-
-    body.dark-mode .now-playing {
-      background: rgba(58, 58, 60, 0.9);
-    }
-
-    .cover {
-      width: 120px;
-      height: 120px;
-      border-radius: 24px;
-      background: linear-gradient(145deg, #ffafbd, #ffc3a0);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      color: #fff;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .cover::after {
-      content: "";
-      position: absolute;
-      width: 120%;
-      height: 120%;
-      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.4), transparent 60%);
-      mix-blend-mode: screen;
-      opacity: 0.7;
-    }
-
-    .track-info {
-      text-align: left;
-      flex: 1;
-    }
-
-    .track-info h2 {
-      margin: 0 0 4px;
-      font-size: 22px;
-    }
-
-    .track-info p {
-      margin: 2px 0;
-      font-size: 14px;
-      opacity: 0.8;
-    }
-
-    .chip-row {
-      margin-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .chip {
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      background: rgba(0, 0, 0, 0.05);
-    }
-
-    body.dark-mode .chip {
-      background: rgba(255, 255, 255, 0.07);
-    }
-
-    /* 控制条 */
-    .controls {
-      margin-top: 6px;
-      padding: 14px 18px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.6);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    body.dark-mode .controls {
-      background: rgba(58, 58, 60, 0.9);
-    }
-
-    .control-buttons {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 18px;
-    }
-
-    .icon-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 999px;
-      border: none;
-      background: rgba(0, 0, 0, 0.06);
-      cursor: pointer;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-    }
-
-    body.dark-mode .icon-btn {
-      background: rgba(255, 255, 255, 0.07);
-      color: #f5f5f7;
-    }
-
-    .icon-btn:hover {
-      transform: translateY(-1px) scale(1.03);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .icon-btn.main {
-      width: 54px;
-      height: 54px;
-      font-size: 22px;
-      background: var(--button-bg);
-      color: #fff;
-    }
-
-    .icon-btn.main:hover {
-      background: var(--button-hover);
-    }
-
-    .progress-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 12px;
-      opacity: 0.8;
-    }
-
-    .time {
-      width: 40px;
-      text-align: center;
-    }
-
-    .progress-bar {
-      flex: 1;
-      appearance: none;
-      height: 6px;
-      border-radius: 999px;
-      background: rgba(0, 0, 0, 0.1);
-      outline: none;
-      cursor: pointer;
-    }
-
-    .progress-bar::-webkit-slider-thumb {
-      appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: rgba(0, 122, 255, 0.9);
-      margin-top: -4px;
-      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.25);
-    }
-
-    body.dark-mode .progress-bar {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    /* 底部返回链接 */
-    footer {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #ccc;
-      font-size: 14px;
-    }
-
-    footer a {
-      color: #fff;
-      text-decoration: none;
-      padding: 8px 16px;
-      border-radius: 999px;
-      background: rgba(0, 0, 0, 0.35);
-    }
-
-    footer a:hover {
-      background: rgba(0, 0, 0, 0.55);
-    }
-
-    /* 响应式：窄屏改为上下布局 */
-    @media (max-width: 768px) {
-      .player-layout {
-        grid-template-columns: 1fr;
-      }
-      .container {
-        margin: 20px;
-      }
-      .now-playing {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .cover {
-        align-self: center;
-      }
-    }
-  </style>
+/* ========== 歌词 ========== */
+.lyrics-box {
+    margin-top: 10px;
+    height: 350px;
+    overflow: hidden;
+    position: relative;
+}
+.lyrics {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    transition: top .3s;
+}
+.lyrics p {
+    text-align: center;
+    font-size: 18px;
+    margin: 12px 0;
+    opacity: 0.5;
+    transition: 0.25s;
+}
+.lyrics p.active {
+    font-size: 22px;
+    opacity: 1;
+    color: #00d9ff;
+}
+</style>
 </head>
+
 <body>
-  <div id="particles-js"></div>
 
-  <header>🎧 Jeffery Music Room</header>
-  <button class="toggle-button" onclick="toggleDarkMode()">🌙</button>
+<div class="player-container">
 
-  <div class="container">
-    <div class="player-layout">
-      <!-- 左边：上传 + 播放列表 -->
-      <aside class="sidebar">
-        <div>
-          <div class="sidebar-title">播放列表</div>
-          <label class="upload-label">
-            ⬆ 上传音乐
-            <span>(本地音频文件)</span>
-            <input id="file-input" type="file" accept="audio/*" multiple />
-          </label>
-          <p style="font-size:12px;opacity:.7;margin-top:6px;">
-            小提示：文件只会保存在你自己的浏览器中，不会上传服务器。刷新页面后需要重新选择文件。
-          </p>
-        </div>
-        <ul id="playlist" class="playlist">
-          <!-- JS 动态填充 -->
-        </ul>
-      </aside>
-
-      <!-- 右边：当前播放 + 控制区 -->
-      <main class="main-panel">
-        <section class="now-playing">
-          <div class="cover" id="cover">
-            🎵
-          </div>
-          <div class="track-info">
-            <h2 id="track-title">还没有选择歌曲</h2>
-            <p id="track-artist">从左边上传一些音乐开始吧～</p>
-            <p id="track-extra">支持 mp3 / m4a / wav 等常见格式</p>
-            <div class="chip-row">
-              <span class="chip">本地播放</span>
-              <span class="chip">Jeffery 专属播放器</span>
-              <span class="chip">仿网易云风格布局</span>
-            </div>
-          </div>
-        </section>
-
-        <section class="controls">
-          <div class="control-buttons">
-            <button class="icon-btn" id="prev-btn" title="上一首">⏮</button>
-            <button class="icon-btn main" id="play-btn" title="播放 / 暂停">▶️</button>
-            <button class="icon-btn" id="next-btn" title="下一首">⏭</button>
-          </div>
-          <div class="progress-row">
-            <span class="time" id="current-time">00:00</span>
-            <input
-              type="range"
-              id="progress"
-              class="progress-bar"
-              value="0"
-              min="0"
-              max="100"
-            />
-            <span class="time" id="total-time">00:00</span>
-          </div>
-        </section>
-      </main>
+    <!-- 左侧播放列表 -->
+    <div class="sidebar">
+        <h2>播放列表</h2>
+        <div id="playlist"></div>
     </div>
-  </div>
 
-  <footer>
-    <a href="index.html">⬅ 返回 Jeffery's Hub</a>
-  </footer>
+    <!-- 右侧主播放区域 -->
+    <div class="main-panel">
 
-  <script>
-    // 粒子背景
-    particlesJS.load("particles-js", "particles.json", function () {});
+        <div class="cover-box">
+            <div class="cover" id="cover"></div>
+            <div class="song-info">
+                <h1 id="songTitle">加载中...</h1>
+                <p id="songArtist"></p>
+            </div>
+        </div>
 
-    // 暗色模式切换
-    function initDarkMode() {
-      const saved = localStorage.getItem("dark-mode");
-      if (saved === "enabled") {
-        document.body.classList.add("dark-mode");
-      }
+        <!-- 控制条 -->
+        <div class="controls">
+            <div class="progress-block">
+                <span class="time" id="currentTime">00:00</span>
+                <input type="range" id="progress" class="progress" min="0" max="100" value="0">
+                <span class="time" id="totalTime">00:00</span>
+            </div>
+
+            <div class="btn-row">
+                <button class="ctrl-btn" id="prev">⏮</button>
+                <button class="ctrl-btn" id="play">▶️</button>
+                <button class="ctrl-btn" id="next">⏭</button>
+            </div>
+        </div>
+
+        <!-- 歌词 -->
+        <div class="lyrics-box">
+            <div class="lyrics" id="lyrics"></div>
+        </div>
+
+    </div>
+
+</div>
+<script>
+// ========================
+// ① 你的歌曲清单（在这里添加歌曲）
+// ========================
+// 每首歌必须包含：文件名、标题、歌手、封面、歌词文件
+// 文件必须放在：/music   /lyrics   /images 三个文件夹中
+// 例如：/music/20251129.mp3
+
+const SONGS = [
+    {
+        file: "20251129.mp3",
+        title: "20251129",
+        artist: "Jeffery",
+        cover: "20251129.jpg",
+        lrc: "20251129.lrc"
     }
-    function toggleDarkMode() {
-      document.body.classList.toggle("dark-mode");
-      localStorage.setItem(
-        "dark-mode",
-        document.body.classList.contains("dark-mode") ? "enabled" : "disabled"
-      );
-    }
-    initDarkMode();
 
-    // 播放器逻辑
-    const fileInput = document.getElementById("file-input");
-    const playlistEl = document.getElementById("playlist");
-    const trackTitleEl = document.getElementById("track-title");
-    const trackArtistEl = document.getElementById("track-artist");
-    const trackExtraEl = document.getElementById("track-extra");
-    const playBtn = document.getElementById("play-btn");
-    const prevBtn = document.getElementById("prev-btn");
-    const nextBtn = document.getElementById("next-btn");
-    const progressEl = document.getElementById("progress");
-    const currentTimeEl = document.getElementById("current-time");
-    const totalTimeEl = document.getElementById("total-time");
+    // 后续你想加歌，继续往这里加：
+    // , { file:"xxxx.mp3", title:"xxx", artist:"Jeffery", cover:"xxx.jpg", lrc:"xxx.lrc" }
+];
 
-    const audio = new Audio();
-    let tracks = [];
-    let currentIndex = -1;
-    let isSeeking = false;
 
-    fileInput.addEventListener("change", (e) => {
-      const files = Array.from(e.target.files || []);
-      if (!files.length) return;
+// ========================
+// ② 元素引用
+// ========================
+const audio = new Audio();
+audio.preload = "auto";
 
-      files.forEach((file) => {
-        const url = URL.createObjectURL(file);
-        tracks.push({
-          name: file.name.replace(/\.[^/.]+$/, ""), // 去掉后缀
-          fileName: file.name,
-          url,
+const playlistEl = document.getElementById("playlist");
+const coverEl = document.getElementById("cover");
+const titleEl = document.getElementById("songTitle");
+const artistEl = document.getElementById("songArtist");
+const currentTimeEl = document.getElementById("currentTime");
+const totalTimeEl = document.getElementById("totalTime");
+const progressEl = document.getElementById("progress");
+
+const lyricsBox = document.getElementById("lyrics");
+
+const btnPlay = document.getElementById("play");
+const btnPrev = document.getElementById("prev");
+const btnNext = document.getElementById("next");
+
+let currentIndex = 0;
+let currentLyrics = [];
+
+
+// ========================
+// ③ 初始化播放列表
+// ========================
+function renderPlaylist() {
+    playlistEl.innerHTML = "";
+    SONGS.forEach((song, index) => {
+        const div = document.createElement("div");
+        div.className = "song-item";
+        div.textContent = song.title;
+
+        div.addEventListener("click", () => playSong(index));
+
+        playlistEl.appendChild(div);
+    });
+}
+renderPlaylist();
+
+
+// ========================
+// ④ 播放指定歌曲
+// ========================
+function playSong(index) {
+    currentIndex = index;
+    const song = SONGS[index];
+
+    // 从 GitHub 远程文件夹取
+    audio.src = "music/" + song.file;
+    audio.play();
+
+    // 刷新 UI
+    titleEl.textContent = song.title;
+    artistEl.textContent = song.artist;
+    coverEl.style.backgroundImage = `url(images/${song.cover})`;
+    btnPlay.textContent = "⏸";
+
+    // 更新选中状态
+    Array.from(playlistEl.children).forEach((el, i) => {
+        el.classList.toggle("active", i === index);
+    });
+
+    // 加载歌词
+    loadLyrics(song.lrc);
+}
+
+
+// ========================
+// ⑤ 格式化时间
+// ========================
+function formatTime(sec) {
+    sec = Math.floor(sec);
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+}
+
+
+// ========================
+// ⑥ 加载 LRC 歌词
+// ========================
+function loadLyrics(lrcFile) {
+    fetch("lyrics/" + lrcFile)
+        .then(res => res.text())
+        .then(text => {
+            const lines = text.split("\n");
+            currentLyrics = [];
+
+            const reg = /\[(\d+):(\d+\.\d+)\](.*)/;
+
+            lines.forEach(line => {
+                const match = reg.exec(line);
+                if (match) {
+                    const min = parseInt(match[1]);
+                    const sec = parseFloat(match[2]);
+                    const time = min * 60 + sec;
+                    const content = match[3].trim();
+
+                    currentLyrics.push({ time, content });
+                }
+            });
+
+            // 渲染歌词
+            lyricsBox.innerHTML = "";
+            currentLyrics.forEach(l => {
+                const p = document.createElement("p");
+                p.textContent = l.content;
+                l.el = p;
+                lyricsBox.appendChild(p);
+            });
         });
-      });
+}
 
-      renderPlaylist();
-      if (currentIndex === -1) {
-        playTrack(0);
-      }
-    });
 
-    function renderPlaylist() {
-      playlistEl.innerHTML = "";
-      tracks.forEach((track, index) => {
-        const li = document.createElement("li");
-        li.className =
-          "playlist-item" + (index === currentIndex ? " active" : "");
-        li.dataset.index = index;
+// ========================
+// ⑦ 音频时间更新 → 歌词滚动
+// ========================
+audio.addEventListener("timeupdate", () => {
+    const cur = audio.currentTime;
 
-        const titleSpan = document.createElement("span");
-        titleSpan.className = "track-title";
-        titleSpan.textContent = track.name;
-
-        const durationSpan = document.createElement("span");
-        durationSpan.className = "track-duration";
-        durationSpan.textContent = track.duration
-          ? formatTime(track.duration)
-          : "--:--";
-
-        li.appendChild(titleSpan);
-        li.appendChild(durationSpan);
-        li.addEventListener("click", () => playTrack(index));
-        playlistEl.appendChild(li);
-      });
+    currentTimeEl.textContent = formatTime(cur);
+    if (audio.duration) {
+        totalTimeEl.textContent = formatTime(audio.duration);
+        progressEl.value = (cur / audio.duration) * 100;
     }
 
-    function playTrack(index) {
-      if (index < 0 || index >= tracks.length) return;
-      currentIndex = index;
-
-      const track = tracks[index];
-      audio.src = track.url;
-      audio.play();
-
-      trackTitleEl.textContent = track.name;
-      trackArtistEl.textContent = track.fileName;
-      trackExtraEl.textContent = "正在播放本地文件 · Track " + (index + 1);
-
-      updatePlaylistActive();
-      updatePlayIcon();
-    }
-
-    function updatePlaylistActive() {
-      Array.from(playlistEl.children).forEach((li, idx) => {
-        if (idx === currentIndex) {
-          li.classList.add("active");
-        } else {
-          li.classList.remove("active");
+    // 找到当前歌词行
+    let activeIndex = -1;
+    for (let i = 0; i < currentLyrics.length; i++) {
+        if (cur >= currentLyrics[i].time) {
+            activeIndex = i;
         }
-      });
     }
 
-    function updatePlayIcon() {
-      if (audio.paused) {
-        playBtn.textContent = "▶️";
-      } else {
-        playBtn.textContent = "⏸";
-      }
-    }
+    // 高亮处理
+    currentLyrics.forEach((l, i) => {
+        l.el.classList.toggle("active", i === activeIndex);
+    });
 
-    playBtn.addEventListener("click", () => {
-      if (!tracks.length) return;
-      if (audio.paused && !audio.src && currentIndex === -1) {
-        playTrack(0);
-      } else if (audio.paused) {
+    // 歌词滚动
+    if (activeIndex >= 0) {
+        const offset = activeIndex * -40;
+        lyricsBox.style.top = offset + "px";
+    }
+});
+
+
+// ========================
+// ⑧ 播放按钮
+// ========================
+btnPlay.addEventListener("click", () => {
+    if (audio.paused) {
         audio.play();
-      } else {
+        btnPlay.textContent = "⏸";
+    } else {
         audio.pause();
-      }
-      updatePlayIcon();
-    });
-
-    prevBtn.addEventListener("click", () => {
-      if (!tracks.length) return;
-      const nextIndex =
-        currentIndex <= 0 ? tracks.length - 1 : (currentIndex - 1) % tracks.length;
-      playTrack(nextIndex);
-    });
-
-    nextBtn.addEventListener("click", () => {
-      if (!tracks.length) return;
-      const nextIndex = (currentIndex + 1) % tracks.length;
-      playTrack(nextIndex);
-    });
-
-    audio.addEventListener("timeupdate", () => {
-      if (isSeeking) return;
-      const current = audio.currentTime || 0;
-      const total = audio.duration || 0;
-
-      currentTimeEl.textContent = formatTime(current);
-      totalTimeEl.textContent = total ? formatTime(total) : "00:00";
-
-      if (total > 0) {
-        const percent = (current / total) * 100;
-        progressEl.value = percent;
-      } else {
-        progressEl.value = 0;
-      }
-    });
-
-    audio.addEventListener("loadedmetadata", () => {
-      const total = audio.duration || 0;
-      totalTimeEl.textContent = total ? formatTime(total) : "00:00";
-
-      // 记录时长到 tracks 里，刷新列表显示
-      if (currentIndex >= 0 && tracks[currentIndex]) {
-        tracks[currentIndex].duration = total;
-        renderPlaylist();
-      }
-    });
-
-    audio.addEventListener("ended", () => {
-      // 自动下一首
-      if (!tracks.length) return;
-      const nextIndex = (currentIndex + 1) % tracks.length;
-      playTrack(nextIndex);
-    });
-
-    progressEl.addEventListener("input", () => {
-      // 拖动时更新当前时间显示
-      if (!audio.duration) return;
-      const percent = progressEl.value;
-      const newTime = (percent / 100) * audio.duration;
-      currentTimeEl.textContent = formatTime(newTime);
-    });
-
-    progressEl.addEventListener("change", () => {
-      if (!audio.duration) return;
-      const percent = progressEl.value;
-      audio.currentTime = (percent / 100) * audio.duration;
-      isSeeking = false;
-    });
-
-    progressEl.addEventListener("mousedown", () => {
-      isSeeking = true;
-    });
-    progressEl.addEventListener("mouseup", () => {
-      isSeeking = false;
-    });
-
-    function formatTime(seconds) {
-      const s = Math.floor(seconds || 0);
-      const m = Math.floor(s / 60);
-      const rest = s % 60;
-      return (
-        String(m).padStart(2, "0") + ":" + String(rest).padStart(2, "0")
-      );
+        btnPlay.textContent = "▶️";
     }
-  </script>
+});
+
+
+// ========================
+// ⑨ 上一首 / 下一首
+// ========================
+btnPrev.addEventListener("click", () => {
+    currentIndex = (currentIndex - 1 + SONGS.length) % SONGS.length;
+    playSong(currentIndex);
+});
+
+btnNext.addEventListener("click", () => {
+    currentIndex = (currentIndex + 1) % SONGS.length;
+    playSong(currentIndex);
+});
+
+
+// ========================
+// ⑩ 拖动进度条
+// ========================
+progressEl.addEventListener("input", () => {
+    if (audio.duration) {
+        audio.currentTime = (progressEl.value / 100) * audio.duration;
+    }
+});
+
+
+// ========================
+// 自动播放第一首
+// ========================
+playSong(0);
+</script>
+
 </body>
 </html>
