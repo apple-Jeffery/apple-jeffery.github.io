@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🎧 Jeffery Music Room</title>
   <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+
   <style>
     :root {
       --bg-color: #f0f2f5;
@@ -24,7 +25,6 @@
       --header-color: #ffffff;
     }
 
-    /* 背景 & 全局 */
     body {
       margin: 0;
       padding: 0;
@@ -32,17 +32,14 @@
       background: url("main-background.jpg") no-repeat center center fixed;
       background-size: cover;
       color: var(--text-color);
-      transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
-      position: relative;
+      transition: 0.3s;
       min-height: 100vh;
     }
 
     #particles-js {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       z-index: -1;
     }
 
@@ -50,237 +47,104 @@
       color: var(--header-color);
       font-size: 28px;
       margin-top: 30px;
-      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
       text-align: center;
     }
 
     .toggle-button {
       position: fixed;
-      top: 20px;
-      right: 20px;
+      top: 20px; right: 20px;
       padding: 10px;
       background: var(--button-bg);
       color: #fff;
       border-radius: 8px;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      border: none;
-      transition: all 0.3s ease;
       z-index: 10;
-    }
-
-    .toggle-button:hover {
-      background: var(--button-hover);
-      transform: scale(1.03);
     }
 
     .container {
       max-width: 1100px;
-      margin: 40px auto 30px;
+      margin: 40px auto;
       padding: 24px;
       background: var(--card-bg);
       border-radius: 20px;
       backdrop-filter: blur(16px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     }
 
-    /* 播放器整体布局：左列表 + 右主界面 */
     .player-layout {
       display: grid;
       grid-template-columns: 280px 1fr;
       gap: 24px;
     }
 
-    /* 左侧播放列表区域 */
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
     .sidebar-title {
       font-size: 20px;
       font-weight: 600;
+      margin-bottom: 12px;
     }
 
     .upload-label {
       display: inline-flex;
-      align-items: center;
-      justify-content: center;
       padding: 10px 14px;
       background: var(--button-bg);
       color: #fff;
       border-radius: 10px;
       cursor: pointer;
       font-size: 14px;
-      margin-top: 4px;
-      transition: all 0.3s ease;
+      margin-top: 6px;
     }
 
-    .upload-label span {
-      margin-left: 4px;
-    }
-
-    .upload-label:hover {
-      background: var(--button-hover);
-      transform: scale(1.03);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    #file-input {
-      display: none;
-    }
+    #file-input { display: none; }
 
     .playlist {
       list-style: none;
       padding: 0;
-      margin: 12px 0 0;
-      max-height: 420px;
+      max-height: 500px;
       overflow-y: auto;
     }
 
     .playlist-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 12px;
+      padding: 12px;
       border-radius: 10px;
       cursor: pointer;
+      display: flex;
+      justify-content: space-between;
       font-size: 14px;
-      margin-bottom: 6px;
-      transition: background 0.2s ease, transform 0.15s ease;
-    }
-
-    .playlist-item:hover {
-      background: rgba(255, 255, 255, 0.6);
-      transform: translateY(-1px);
-    }
-
-    body.dark-mode .playlist-item:hover {
-      background: rgba(88, 88, 90, 0.9);
+      transition: 0.2s;
     }
 
     .playlist-item.active {
-      background: rgba(0, 122, 255, 0.18);
-      border-left: 4px solid rgba(0, 122, 255, 0.9);
-    }
-
-    .track-title {
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      text-align: left;
-      padding-right: 8px;
-    }
-
-    .track-duration {
-      font-size: 12px;
-      opacity: 0.7;
-      min-width: 50px;
-      text-align: right;
-    }
-
-    /* 右侧主播放区域 */
-    .main-panel {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 20px;
+      background: rgba(0,122,255,0.18);
+      border-left: 4px solid rgba(0,122,255,0.9);
     }
 
     .now-playing {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      padding: 18px 20px;
+      padding: 20px;
       border-radius: 16px;
-      background: rgba(255, 255, 255, 0.6);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-    }
-
-    body.dark-mode .now-playing {
-      background: rgba(58, 58, 60, 0.9);
+      background: rgba(255,255,255,0.6);
+      display: flex;
+      gap: 20px;
     }
 
     .cover {
-      width: 120px;
-      height: 120px;
+      width: 120px; height: 120px;
       border-radius: 24px;
-      background: linear-gradient(145deg, #ffafbd, #ffc3a0);
+      background: #999;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 40px;
-      color: #fff;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
-      position: relative;
-      overflow: hidden;
     }
 
-    .cover::after {
-      content: "";
-      position: absolute;
-      width: 120%;
-      height: 120%;
-      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.4), transparent 60%);
-      mix-blend-mode: screen;
-      opacity: 0.7;
-    }
-
-    .track-info {
-      text-align: left;
-      flex: 1;
-    }
-
-    .track-info h2 {
-      margin: 0 0 4px;
-      font-size: 22px;
-    }
-
-    .track-info p {
-      margin: 2px 0;
-      font-size: 14px;
-      opacity: 0.8;
-    }
-
-    .chip-row {
-      margin-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .chip {
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      background: rgba(0, 0, 0, 0.05);
-    }
-
-    body.dark-mode .chip {
-      background: rgba(255, 255, 255, 0.07);
-    }
-
-    /* 控制条 */
     .controls {
-      margin-top: 6px;
-      padding: 14px 18px;
+      margin-top: 10px;
+      padding: 18px;
+      background: rgba(255,255,255,0.6);
       border-radius: 16px;
-      background: rgba(255, 255, 255, 0.6);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    body.dark-mode .controls {
-      background: rgba(58, 58, 60, 0.9);
     }
 
     .control-buttons {
       display: flex;
-      align-items: center;
       justify-content: center;
       gap: 18px;
     }
@@ -289,113 +153,33 @@
       width: 40px;
       height: 40px;
       border-radius: 999px;
+      background: rgba(0,0,0,0.1);
       border: none;
-      background: rgba(0, 0, 0, 0.06);
       cursor: pointer;
       font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-    }
-
-    body.dark-mode .icon-btn {
-      background: rgba(255, 255, 255, 0.07);
-      color: #f5f5f7;
-    }
-
-    .icon-btn:hover {
-      transform: translateY(-1px) scale(1.03);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     .icon-btn.main {
-      width: 54px;
-      height: 54px;
-      font-size: 22px;
+      width: 54px; height: 54px;
       background: var(--button-bg);
       color: #fff;
-    }
-
-    .icon-btn.main:hover {
-      background: var(--button-hover);
+      font-size: 24px;
     }
 
     .progress-row {
       display: flex;
-      align-items: center;
       gap: 10px;
-      font-size: 12px;
-      opacity: 0.8;
-    }
-
-    .time {
-      width: 40px;
-      text-align: center;
+      align-items: center;
+      margin-top: 12px;
     }
 
     .progress-bar {
       flex: 1;
-      appearance: none;
-      height: 6px;
-      border-radius: 999px;
-      background: rgba(0, 0, 0, 0.1);
-      outline: none;
-      cursor: pointer;
     }
 
-    .progress-bar::-webkit-slider-thumb {
-      appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: rgba(0, 122, 255, 0.9);
-      margin-top: -4px;
-      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.25);
-    }
-
-    body.dark-mode .progress-bar {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    /* 底部返回链接 */
-    footer {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #ccc;
-      font-size: 14px;
-    }
-
-    footer a {
-      color: #fff;
-      text-decoration: none;
-      padding: 8px 16px;
-      border-radius: 999px;
-      background: rgba(0, 0, 0, 0.35);
-    }
-
-    footer a:hover {
-      background: rgba(0, 0, 0, 0.55);
-    }
-
-    /* 响应式：窄屏改为上下布局 */
-    @media (max-width: 768px) {
-      .player-layout {
-        grid-template-columns: 1fr;
-      }
-      .container {
-        margin: 20px;
-      }
-      .now-playing {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .cover {
-        align-self: center;
-      }
-    }
   </style>
 </head>
+
 <body>
   <div id="particles-js"></div>
 
@@ -404,274 +188,161 @@
 
   <div class="container">
     <div class="player-layout">
-      <!-- 左边：上传 + 播放列表 -->
-      <aside class="sidebar">
-        <div>
-          <div class="sidebar-title">播放列表</div>
-          <label class="upload-label">
-            ⬆ 上传音乐
-            <span>(本地音频文件)</span>
-            <input id="file-input" type="file" accept="audio/*" multiple />
-          </label>
-          <p style="font-size:12px;opacity:.7;margin-top:6px;">
-            小提示：文件只会保存在你自己的浏览器中，不会上传服务器。刷新页面后需要重新选择文件。
-          </p>
-        </div>
-        <ul id="playlist" class="playlist">
-          <!-- JS 动态填充 -->
-        </ul>
+      <!-- 左侧播放列表 -->
+      <aside>
+        <div class="sidebar-title">播放列表</div>
+
+        <!-- 上传本地歌曲 -->
+        <label class="upload-label">
+          ⬆ 上传音乐
+          <input id="file-input" type="file" accept="audio/*" multiple />
+        </label>
+
+        <ul id="playlist" class="playlist"></ul>
       </aside>
 
-      <!-- 右边：当前播放 + 控制区 -->
+      <!-- 右侧播放界面 -->
       <main class="main-panel">
         <section class="now-playing">
-          <div class="cover" id="cover">
-            🎵
-          </div>
-          <div class="track-info">
-            <h2 id="track-title">还没有选择歌曲</h2>
-            <p id="track-artist">从左边上传一些音乐开始吧～</p>
-            <p id="track-extra">支持 mp3 / m4a / wav 等常见格式</p>
-            <div class="chip-row">
-              <span class="chip">本地播放</span>
-              <span class="chip">Jeffery 专属播放器</span>
-              <span class="chip">仿网易云风格布局</span>
-            </div>
+          <div class="cover">🎵</div>
+          <div>
+            <h2 id="track-title">请选择音乐</h2>
+            <p id="track-artist">Jeffery</p>
+            <p id="track-extra">播放器已准备就绪</p>
           </div>
         </section>
 
         <section class="controls">
           <div class="control-buttons">
-            <button class="icon-btn" id="prev-btn" title="上一首">⏮</button>
-            <button class="icon-btn main" id="play-btn" title="播放 / 暂停">▶️</button>
-            <button class="icon-btn" id="next-btn" title="下一首">⏭</button>
+            <button class="icon-btn" id="prev-btn">⏮</button>
+            <button class="icon-btn main" id="play-btn">▶️</button>
+            <button class="icon-btn" id="next-btn">⏭</button>
           </div>
+
           <div class="progress-row">
-            <span class="time" id="current-time">00:00</span>
-            <input
-              type="range"
-              id="progress"
-              class="progress-bar"
-              value="0"
-              min="0"
-              max="100"
-            />
-            <span class="time" id="total-time">00:00</span>
+            <span id="current-time">00:00</span>
+            <input type="range" id="progress" min="0" max="100" value="0" class="progress-bar">
+            <span id="total-time">00:00</span>
           </div>
         </section>
       </main>
     </div>
   </div>
 
-  <footer>
-    <a href="index.html">⬅ 返回 Jeffery's Hub</a>
-  </footer>
+<script>
+  // 暗色模式
+  function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+    localStorage.setItem("dark-mode",
+      document.body.classList.contains("dark-mode") ? "1" : "0");
+  }
+  if (localStorage.getItem("dark-mode") === "1") {
+    document.body.classList.add("dark-mode");
+  }
 
-  <script>
-    // 粒子背景
-    particlesJS.load("particles-js", "particles.json", function () {});
-
-    // 暗色模式切换
-    function initDarkMode() {
-      const saved = localStorage.getItem("dark-mode");
-      if (saved === "enabled") {
-        document.body.classList.add("dark-mode");
-      }
+  // === 统一播放器：服务器 + 本地 ===
+  const audio = new Audio();
+  let tracks = [
+    {
+      name: "20251129",
+      fileName: "20251129.mp3",
+      url: "https://apple-jeffery.github.io/20251129.mp3",
+      type: "server"
     }
-    function toggleDarkMode() {
-      document.body.classList.toggle("dark-mode");
-      localStorage.setItem(
-        "dark-mode",
-        document.body.classList.contains("dark-mode") ? "enabled" : "disabled"
-      );
-    }
-    initDarkMode();
+  ];
 
-    // 播放器逻辑
-    const fileInput = document.getElementById("file-input");
-    const playlistEl = document.getElementById("playlist");
-    const trackTitleEl = document.getElementById("track-title");
-    const trackArtistEl = document.getElementById("track-artist");
-    const trackExtraEl = document.getElementById("track-extra");
-    const playBtn = document.getElementById("play-btn");
-    const prevBtn = document.getElementById("prev-btn");
-    const nextBtn = document.getElementById("next-btn");
-    const progressEl = document.getElementById("progress");
-    const currentTimeEl = document.getElementById("current-time");
-    const totalTimeEl = document.getElementById("total-time");
+  let currentIndex = 0;
 
-    const audio = new Audio();
-    let tracks = [];
-    let currentIndex = -1;
-    let isSeeking = false;
+  const playlistEl = document.getElementById("playlist");
+  const trackTitleEl = document.getElementById("track-title");
+  const trackArtistEl = document.getElementById("track-artist");
+  const trackExtraEl = document.getElementById("track-extra");
+  const playBtn = document.getElementById("play-btn");
+  const prevBtn = document.getElementById("prev-btn");
+  const nextBtn = document.getElementById("next-btn");
+  const progressEl = document.getElementById("progress");
+  const currentTimeEl = document.getElementById("current-time");
+  const totalTimeEl = document.getElementById("total-time");
 
-    fileInput.addEventListener("change", (e) => {
-      const files = Array.from(e.target.files || []);
-      if (!files.length) return;
+  // 渲染播放列表
+  function renderPlaylist() {
+    playlistEl.innerHTML = "";
+    tracks.forEach((t, i) => {
+      const li = document.createElement("li");
+      li.className = "playlist-item" + (i === currentIndex ? " active" : "");
+      li.innerHTML = `<span>${t.name}</span><span>${t.type === "server" ? "云端" : "本地"}</span>`;
+      li.onclick = () => playTrack(i);
+      playlistEl.appendChild(li);
+    });
+  }
 
-      files.forEach((file) => {
-        const url = URL.createObjectURL(file);
-        tracks.push({
-          name: file.name.replace(/\.[^/.]+$/, ""), // 去掉后缀
-          fileName: file.name,
-          url,
-        });
+  // 播放
+  function playTrack(i) {
+    currentIndex = i;
+    const t = tracks[i];
+
+    audio.src = t.url;
+    audio.play();
+
+    trackTitleEl.textContent = t.name;
+    trackArtistEl.textContent = t.fileName;
+    trackExtraEl.textContent = t.type === "server" ? "来自 Jeffery 云端音乐" : "本地文件";
+
+    updatePlaylist();
+    updatePlayIcon();
+  }
+
+  function updatePlaylist() {
+    [...playlistEl.children].forEach((li, idx) => {
+      li.classList.toggle("active", idx === currentIndex);
+    });
+  }
+
+  function updatePlayIcon() {
+    playBtn.textContent = audio.paused ? "▶️" : "⏸";
+  }
+
+  playBtn.onclick = () => {
+    audio.paused ? audio.play() : audio.pause();
+    updatePlayIcon();
+  };
+
+  prevBtn.onclick = () => playTrack((currentIndex - 1 + tracks.length) % tracks.length);
+  nextBtn.onclick = () => playTrack((currentIndex + 1) % tracks.length);
+
+  // 进度条
+  audio.ontimeupdate = () => {
+    if (!audio.duration) return;
+    progressEl.value = (audio.currentTime / audio.duration) * 100;
+    currentTimeEl.textContent = formatTime(audio.currentTime);
+    totalTimeEl.textContent = formatTime(audio.duration);
+  };
+
+  progressEl.oninput = () => {
+    audio.currentTime = (progressEl.value / 100) * audio.duration;
+  };
+
+  function formatTime(s) {
+    s = Math.floor(s);
+    return String(Math.floor(s / 60)).padStart(2,"0") + ":" + String(s % 60).padStart(2,"0");
+  }
+
+  // 本地上传逻辑
+  document.getElementById("file-input").addEventListener("change", e => {
+    const files = [...e.target.files];
+    files.forEach(f => {
+      tracks.push({
+        name: f.name.replace(/\.[^/.]+$/, ""),
+        fileName: f.name,
+        url: URL.createObjectURL(f),
+        type: "local"
       });
-
-      renderPlaylist();
-      if (currentIndex === -1) {
-        playTrack(0);
-      }
     });
+    renderPlaylist();
+  });
 
-    function renderPlaylist() {
-      playlistEl.innerHTML = "";
-      tracks.forEach((track, index) => {
-        const li = document.createElement("li");
-        li.className =
-          "playlist-item" + (index === currentIndex ? " active" : "");
-        li.dataset.index = index;
+  renderPlaylist();
+</script>
 
-        const titleSpan = document.createElement("span");
-        titleSpan.className = "track-title";
-        titleSpan.textContent = track.name;
-
-        const durationSpan = document.createElement("span");
-        durationSpan.className = "track-duration";
-        durationSpan.textContent = track.duration
-          ? formatTime(track.duration)
-          : "--:--";
-
-        li.appendChild(titleSpan);
-        li.appendChild(durationSpan);
-        li.addEventListener("click", () => playTrack(index));
-        playlistEl.appendChild(li);
-      });
-    }
-
-    function playTrack(index) {
-      if (index < 0 || index >= tracks.length) return;
-      currentIndex = index;
-
-      const track = tracks[index];
-      audio.src = track.url;
-      audio.play();
-
-      trackTitleEl.textContent = track.name;
-      trackArtistEl.textContent = track.fileName;
-      trackExtraEl.textContent = "正在播放本地文件 · Track " + (index + 1);
-
-      updatePlaylistActive();
-      updatePlayIcon();
-    }
-
-    function updatePlaylistActive() {
-      Array.from(playlistEl.children).forEach((li, idx) => {
-        if (idx === currentIndex) {
-          li.classList.add("active");
-        } else {
-          li.classList.remove("active");
-        }
-      });
-    }
-
-    function updatePlayIcon() {
-      if (audio.paused) {
-        playBtn.textContent = "▶️";
-      } else {
-        playBtn.textContent = "⏸";
-      }
-    }
-
-    playBtn.addEventListener("click", () => {
-      if (!tracks.length) return;
-      if (audio.paused && !audio.src && currentIndex === -1) {
-        playTrack(0);
-      } else if (audio.paused) {
-        audio.play();
-      } else {
-        audio.pause();
-      }
-      updatePlayIcon();
-    });
-
-    prevBtn.addEventListener("click", () => {
-      if (!tracks.length) return;
-      const nextIndex =
-        currentIndex <= 0 ? tracks.length - 1 : (currentIndex - 1) % tracks.length;
-      playTrack(nextIndex);
-    });
-
-    nextBtn.addEventListener("click", () => {
-      if (!tracks.length) return;
-      const nextIndex = (currentIndex + 1) % tracks.length;
-      playTrack(nextIndex);
-    });
-
-    audio.addEventListener("timeupdate", () => {
-      if (isSeeking) return;
-      const current = audio.currentTime || 0;
-      const total = audio.duration || 0;
-
-      currentTimeEl.textContent = formatTime(current);
-      totalTimeEl.textContent = total ? formatTime(total) : "00:00";
-
-      if (total > 0) {
-        const percent = (current / total) * 100;
-        progressEl.value = percent;
-      } else {
-        progressEl.value = 0;
-      }
-    });
-
-    audio.addEventListener("loadedmetadata", () => {
-      const total = audio.duration || 0;
-      totalTimeEl.textContent = total ? formatTime(total) : "00:00";
-
-      // 记录时长到 tracks 里，刷新列表显示
-      if (currentIndex >= 0 && tracks[currentIndex]) {
-        tracks[currentIndex].duration = total;
-        renderPlaylist();
-      }
-    });
-
-    audio.addEventListener("ended", () => {
-      // 自动下一首
-      if (!tracks.length) return;
-      const nextIndex = (currentIndex + 1) % tracks.length;
-      playTrack(nextIndex);
-    });
-
-    progressEl.addEventListener("input", () => {
-      // 拖动时更新当前时间显示
-      if (!audio.duration) return;
-      const percent = progressEl.value;
-      const newTime = (percent / 100) * audio.duration;
-      currentTimeEl.textContent = formatTime(newTime);
-    });
-
-    progressEl.addEventListener("change", () => {
-      if (!audio.duration) return;
-      const percent = progressEl.value;
-      audio.currentTime = (percent / 100) * audio.duration;
-      isSeeking = false;
-    });
-
-    progressEl.addEventListener("mousedown", () => {
-      isSeeking = true;
-    });
-    progressEl.addEventListener("mouseup", () => {
-      isSeeking = false;
-    });
-
-    function formatTime(seconds) {
-      const s = Math.floor(seconds || 0);
-      const m = Math.floor(s / 60);
-      const rest = s % 60;
-      return (
-        String(m).padStart(2, "0") + ":" + String(rest).padStart(2, "0")
-      );
-    }
-  </script>
 </body>
 </html>
